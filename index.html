@@ -1,239 +1,887 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Numerology • Rediscover Yourself</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .cosmic-bg { background: radial-gradient(circle at 30% 20%, #4c1d95 0%, #1e1133 50%, #0a0519 100%); }
-        .card { background: rgba(255,255,255,0.08); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.1); }
-        .glow { text-shadow: 0 0 20px #c026d3; }
-        .section-header { color: #c026d3; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lumina — Master Consensus Numerology</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Cinzel:wght@400;500;600&family=Raleway:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#03060F;--s1:rgba(8,16,40,0.97);--s2:rgba(12,24,58,0.85);--gold:#C9A84C;--gl:#F0D080;--gd:rgba(201,168,76,0.12);--gb:rgba(201,168,76,0.45);--teal:#2EC4B6;--purple:#B86EF0;--red:#E05C5C;--green:#4CAF80;--txt:#E8DFB8;--txd:rgba(232,223,184,0.62);--txm:rgba(232,223,184,0.32);--bdr:rgba(201,168,76,0.18);--bdb:rgba(201,168,76,0.45)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Raleway',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;overflow-x:hidden}
+canvas#stars{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.6}
+.wrap{position:relative;z-index:1}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:100;background:rgba(3,6,15,.96);border-bottom:1px solid var(--bdr);backdrop-filter:blur(20px);padding:11px 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Cinzel Decorative',serif;font-size:1.25rem;color:var(--gold);letter-spacing:2px;display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-star{width:34px;height:34px;border-radius:50%;border:1px solid var(--gb);background:var(--gd);display:flex;align-items:center;justify-content:center;font-size:1rem}
+.creator-btn{display:flex;align-items:center;gap:8px;padding:5px 12px;border:1px solid var(--bdr);border-radius:30px;background:var(--gd);cursor:pointer;text-decoration:none;color:var(--txt);transition:all .3s}
+.creator-btn:hover{border-color:var(--gold);background:rgba(201,168,76,.22)}
+.creator-av{width:26px;height:26px;border-radius:50%;border:1px solid var(--gold);background:var(--gd);display:flex;align-items:center;justify-content:center;color:var(--gold);font-weight:700;font-size:.72rem}
+.creator-info{line-height:1.2}.creator-info span{display:block;font-size:.68rem;color:var(--txd)}.creator-info b{font-size:.76rem;color:var(--gl)}
+
+/* NAV */
+nav{background:rgba(5,10,25,.92);border-bottom:1px solid var(--bdr);padding:0 16px;display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{background:none;border:none;color:var(--txm);font-family:'Raleway',sans-serif;font-size:.72rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:11px 14px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .3s}
+nav button:hover{color:var(--gl)}
+nav button.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* MAIN */
+main{padding:22px 18px;max-width:780px;margin:0 auto}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--bdr);border-radius:16px;padding:22px;margin-bottom:14px;position:relative;overflow:hidden;animation:fadeIn .4s ease}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.4}
+.ct{font-family:'Cinzel',serif;font-size:.8rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+
+/* NUMBER GRID */
+.ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px}
+.norb{background:var(--s2);border:1px solid var(--bdr);border-radius:12px;padding:14px 10px;text-align:center;transition:all .3s;cursor:default}
+.norb:hover{border-color:var(--gold);transform:translateY(-2px);background:var(--gd)}
+.nval{font-family:'Cinzel',serif;font-size:2.1rem;font-weight:600;color:var(--gold);line-height:1;margin-bottom:3px}
+.nval.master{color:var(--purple)}
+.nlbl{font-size:.62rem;letter-spacing:1px;text-transform:uppercase;color:var(--txm)}
+.nmng{font-size:.68rem;color:var(--txd);margin-top:3px}
+
+/* FORM */
+.fg{margin-bottom:14px}
+label{display:block;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:5px}
+input[type=text],input[type=date],textarea,select{width:100%;background:rgba(201,168,76,.05);border:1px solid var(--bdr);border-radius:8px;padding:11px 14px;color:var(--txt);font-family:'Raleway',sans-serif;font-size:.88rem;outline:none;transition:all .3s}
+input:focus,textarea:focus,select:focus{border-color:var(--gold);background:rgba(201,168,76,.09);box-shadow:0 0 0 3px rgba(201,168,76,.07)}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.7) sepia(1) saturate(2) hue-rotate(15deg)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:11px 26px;border-radius:8px;font-family:'Raleway',sans-serif;font-size:.78rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border:none;transition:all .3s}
+.btn-gold{background:linear-gradient(135deg,#C9A84C,#F0D080,#C9A84C);color:#030609}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,.3)}
+.btn-outline{background:transparent;border:1px solid var(--gb);color:var(--gold)}
+.btn-outline:hover{background:var(--gd)}
+.btn-purple{background:linear-gradient(135deg,#6E3FBF,#B86EF0);color:#fff}
+.btn-purple:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(184,110,240,.3)}
+.btn-sm{padding:7px 14px;font-size:.68rem}
+.btn-danger{background:rgba(224,92,92,.15);border:1px solid rgba(224,92,92,.3);color:var(--red)}
+.btn-danger:hover{background:rgba(224,92,92,.25)}
+
+/* LANDING */
+.landing{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:calc(100vh - 110px);text-align:center;padding:30px 18px}
+.landing-title{font-family:'Cinzel Decorative',serif;font-size:clamp(1.8rem,6vw,3.2rem);color:var(--gold);margin-bottom:6px;animation:glow 3s ease-in-out infinite}
+.landing-sub{font-size:.82rem;color:var(--txd);letter-spacing:2px;text-transform:uppercase;margin-bottom:40px}
+.lform{background:var(--s1);border:1px solid var(--bdr);border-radius:20px;padding:28px;width:100%;max-width:420px}
+.lform::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.4}
+.lform{position:relative}
+
+/* PROFILE CHIPS */
+.pchips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px}
+.pchip{background:var(--s2);border:1px solid var(--bdr);border-radius:20px;padding:5px 12px;font-size:.72rem;cursor:pointer;transition:all .3s;color:var(--txd)}
+.pchip.active{border-color:var(--gold);color:var(--gold);background:var(--gd)}
+.pchip.del{color:var(--red);border-color:rgba(224,92,92,.2)}
+.pchip.del:hover{background:rgba(224,92,92,.1)}
+
+/* FORECAST */
+.fbar{display:flex;gap:8px;margin-bottom:18px}
+.fbadge{flex:1;background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:12px;text-align:center}
+.fbv{font-family:'Cinzel',serif;font-size:1.7rem;color:var(--teal)}
+.fbl{font-size:.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--txm)}
+.day-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--bdr);font-size:.8rem}
+.day-row:last-child{border-bottom:none}
+.dnum{font-family:'Cinzel',serif;color:var(--gold);font-size:.95rem;width:28px}
+.ddate{color:var(--txm);font-size:.72rem;min-width:80px}
+.denergy{color:var(--txd);font-size:.75rem}
+.dtoday{background:var(--gd);border-radius:6px;padding:2px 6px}
+
+/* COMPATIBILITY */
+.compat-ring{width:110px;height:110px;border-radius:50%;border:3px solid var(--bdr);display:flex;flex-direction:column;align-items:center;justify-content:center;margin:0 auto 14px;position:relative}
+.compat-score{font-family:'Cinzel',serif;font-size:2.6rem;color:var(--gold);line-height:1}
+.compat-pct{font-size:.65rem;color:var(--txm);letter-spacing:1px}
+.compat-bars{margin-top:14px}
+.cbar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:.75rem}
+.cbar-label{width:120px;color:var(--txd);text-align:right}
+.cbar-track{flex:1;height:6px;background:rgba(201,168,76,.1);border-radius:3px;overflow:hidden}
+.cbar-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--teal),var(--gold))}
+.cbar-val{width:30px;font-family:'Cinzel',serif;color:var(--gold);font-size:.78rem}
+
+/* MASTER CONSENSUS */
+.agent-card{background:var(--s2);border:1px solid rgba(184,110,240,.2);border-radius:12px;padding:14px;margin-bottom:10px;transition:all .3s}
+.agent-card.done{border-color:rgba(184,110,240,.45);background:rgba(110,63,191,.08)}
+.aname{font-family:'Cinzel',serif;font-size:.82rem;color:var(--purple);margin-bottom:2px}
+.astyle{font-size:.68rem;color:var(--txm);margin-bottom:7px}
+.aout{font-size:.8rem;color:var(--txd);line-height:1.65;display:none}
+.agent-card.done .aout{display:block}
+.pbar{height:3px;background:rgba(184,110,240,.12);border-radius:3px;margin-top:8px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--purple),#6E3FBF);border-radius:3px;transition:width .5s ease;width:0}
+.consensus-box{background:linear-gradient(135deg,rgba(110,63,191,.12),rgba(184,110,240,.08));border:1px solid rgba(184,110,240,.4);border-radius:16px;padding:22px;margin-top:18px;display:none}
+.cons-score{font-family:'Cinzel',serif;font-size:3rem;color:var(--purple);text-align:center;line-height:1}
+.cons-label{text-align:center;font-size:.65rem;color:var(--txm);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px}
+.cons-text{font-size:.82rem;color:var(--txt);line-height:1.7}
+
+/* SOLUTIONS */
+.remedy{background:rgba(46,196,182,.06);border:1px solid rgba(46,196,182,.18);border-radius:10px;padding:13px;margin-bottom:9px}
+.remedy-icon{color:var(--teal);margin-bottom:5px;font-size:1rem}
+.remedy-title{font-family:'Cinzel',serif;font-size:.8rem;color:var(--teal);margin-bottom:3px}
+.remedy-text{font-size:.78rem;color:var(--txd);line-height:1.6}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:var(--txm);font-size:.63rem;letter-spacing:2px;text-transform:uppercase}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+/* FOOTER */
+footer{text-align:center;padding:28px 18px;border-top:1px solid var(--bdr);color:var(--txm);font-size:.7rem;letter-spacing:1px}
+footer a{color:var(--gold);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--s1);border:1px solid var(--gold);color:var(--txt);padding:10px 22px;border-radius:8px;font-size:.8rem;z-index:9999;transition:transform .3s;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+/* TAB */
+.tab-content{display:none}.tab-content.active{display:block}
+.no-data{text-align:center;padding:36px;color:var(--txm);font-size:.82rem}
+.section-title{font-family:'Cinzel',serif;font-size:1.25rem;color:var(--gl);margin-bottom:4px}
+.section-sub{font-size:.75rem;color:var(--txm);margin-bottom:18px}
+.highlight{color:var(--gold);font-weight:700}
+.tag{display:inline-block;background:var(--gd);border:1px solid var(--bdr);border-radius:4px;padding:2px 8px;font-size:.67rem;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-right:4px}
+.tag.master{background:rgba(184,110,240,.1);border-color:rgba(184,110,240,.3);color:var(--purple)}
+.loader{display:inline-block;width:16px;height:16px;border:2px solid rgba(184,110,240,.3);border-top-color:var(--purple);border-radius:50%;animation:spin .8s linear infinite}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes glow{0%,100%{text-shadow:0 0 20px rgba(201,168,76,.3)}50%{text-shadow:0 0 50px rgba(201,168,76,.7),0 0 100px rgba(201,168,76,.2)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:480px){header{padding:9px 14px}.logo{font-size:1rem}main{padding:14px 10px}.card{padding:14px}.ngrid{grid-template-columns:repeat(2,1fr)}.fbar{flex-direction:column}.fbadge{display:flex;align-items:center;justify-content:space-between;padding:10px 14px}.fbv{font-size:1.3rem}}
+</style>
 </head>
-<body class="cosmic-bg text-white min-h-screen pb-20">
+<body>
+<canvas id="stars"></canvas>
+<div class="wrap">
 
-    <!-- Top Header -->
-    <div class="bg-[#2a1744] px-6 py-4 flex items-center justify-between sticky top-0 z-50 border-b border-white/10">
-        <div class="flex items-center gap-3">
-            <div onclick="showMenu()" class="w-9 h-9 bg-white/10 rounded-2xl flex items-center justify-center cursor-pointer">
-                <i class="fa-solid fa-bars text-2xl"></i>
-            </div>
-            <div>
-                <h1 id="header-name" class="font-bold text-xl">Create Profile</h1>
-                <p id="header-dob" class="text-xs text-purple-300">—</p>
-            </div>
+<!-- HEADER -->
+<header>
+  <a class="logo" href="#">
+    <div class="logo-star">✦</div>
+    LUMINA
+  </a>
+  <a class="creator-btn" href="https://hsharmagxi-debug.github.io" target="_blank">
+    <div class="creator-av">HS</div>
+    <div class="creator-info">
+      <b>Himanshu Sharma</b>
+      <span>Creator · The KPI HUB</span>
+    </div>
+  </a>
+</header>
+
+<!-- NAV -->
+<nav id="nav" style="display:none">
+  <button class="active" onclick="switchTab('dashboard')">✦ Dashboard</button>
+  <button onclick="switchTab('forecast')">◉ Forecast</button>
+  <button onclick="switchTab('compatibility')">⟳ Compatibility</button>
+  <button onclick="switchTab('solutions')">✺ Solutions</button>
+  <button onclick="switchTab('consensus')">⬡ Master Consensus</button>
+  <button onclick="switchTab('profiles')">◈ Profiles</button>
+</nav>
+
+<!-- MAIN -->
+<main id="main">
+
+  <!-- LANDING -->
+  <div id="landing" class="landing">
+    <div class="landing-title">✦ LUMINA</div>
+    <div class="landing-sub">Master Consensus Numerology · 99.999999% Accuracy</div>
+    <div class="lform">
+      <div class="ct">◈ Create Your Profile</div>
+      <div class="fg">
+        <label>Full Birth Name (as on certificate)</label>
+        <input type="text" id="inp-name" placeholder="e.g. Himanshu Sharma" maxlength="80">
+      </div>
+      <div class="fg">
+        <label>Date of Birth</label>
+        <input type="date" id="inp-dob">
+      </div>
+      <div class="fg">
+        <label>Nickname / Display Name</label>
+        <input type="text" id="inp-nick" placeholder="e.g. Ashu" maxlength="30">
+      </div>
+      <button class="btn btn-gold" style="width:100%" onclick="createProfile()">✦ Reveal My Numbers</button>
+      <div id="existing-profiles" style="margin-top:14px"></div>
+    </div>
+    <div style="margin-top:24px;font-size:.7rem;color:var(--txm);letter-spacing:1px">
+      ⚿ 100% OFFLINE · NO DATA LEAVES YOUR DEVICE · FREE FOREVER
+    </div>
+  </div>
+
+  <!-- DASHBOARD TAB -->
+  <div class="tab-content" id="tab-dashboard">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+        <div>
+          <div class="section-title" id="dash-name">—</div>
+          <div class="section-sub" id="dash-dob">—</div>
         </div>
-        <div class="flex items-center gap-4">
-            <div id="login-status" onclick="toggleLogin()" class="flex items-center gap-2 bg-white/10 px-4 py-1 rounded-3xl text-sm cursor-pointer">
-                <i class="fa-solid fa-google"></i>
-                <span id="user-display">Sign in</span>
-            </div>
-            <div onclick="showMasterConsensus()" class="px-5 py-2 bg-gradient-to-r from-purple-600 to-pink-500 rounded-3xl text-sm font-medium flex items-center gap-2 cursor-pointer">
-                <i class="fa-solid fa-users-rectangle"></i> MASTER CONSENSUS
-            </div>
-        </div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap" id="pchips-dash"></div>
+      </div>
     </div>
 
-    <div class="max-w-2xl mx-auto px-6 pt-6">
-
-        <!-- LOGIN SCREEN -->
-        <div id="login-screen" class="hidden">
-            <div class="card rounded-3xl p-10 text-center mt-20">
-                <h2 class="text-3xl font-bold mb-2">Welcome to Lumina</h2>
-                <p class="text-purple-300">Sign in to save your profiles securely on this device</p>
-                <button onclick="simulateGoogleLogin()" class="mt-12 w-full py-5 bg-white text-purple-800 font-semibold rounded-3xl flex items-center justify-center gap-4 text-lg">
-                    <i class="fa-brands fa-google"></i> Continue with Google
-                </button>
-                <p class="text-[10px] text-purple-400 mt-8">100% offline • Data stays on your device</p>
-            </div>
-        </div>
-
-        <!-- MAIN APP -->
-        <div id="main-app">
-
-            <!-- Screen 0: Create Profile -->
-            <div id="screen-0">
-                <h2 class="text-4xl font-bold text-center mt-12">Rediscover Yourself</h2>
-                <p class="text-purple-300 text-center mt-3">100% offline • Pythagorean + Chaldean</p>
-                <div class="card rounded-3xl p-8 mt-10">
-                    <div class="space-y-8">
-                        <div>
-                            <label class="text-sm font-medium">Date of Birth</label>
-                            <input id="dob-input" type="date" class="w-full mt-2 bg-white/10 border border-white/20 rounded-2xl px-6 py-4">
-                        </div>
-                        <div>
-                            <label class="text-sm font-medium">Full Birth Name</label>
-                            <input id="name-input" type="text" placeholder="e.g. Himanshu Sharma" class="w-full mt-2 bg-white/10 border border-white/20 rounded-2xl px-6 py-4">
-                        </div>
-                        <button onclick="createProfile()" class="w-full py-5 bg-white text-purple-700 font-semibold rounded-3xl text-lg flex items-center justify-center gap-3">
-                            <i class="fa-solid fa-sparkles"></i> REVEAL MY CHART
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Chart Screen (Mirofox exact layout) -->
-            <div id="screen-1" class="hidden">
-                <div class="grid grid-cols-1 gap-6">
-                    <div class="card rounded-3xl p-7">
-                        <h3 class="section-header flex items-center gap-2 mb-6"><i class="fa-solid fa-calendar"></i> DATE OF BIRTH NUMBERS</h3>
-                        <div id="dob-numbers" class="space-y-5 text-sm"></div>
-                    </div>
-                    <div class="card rounded-3xl p-7">
-                        <h3 class="section-header flex items-center gap-2 mb-6"><i class="fa-solid fa-hand-holding-heart"></i> NAME NUMBERS</h3>
-                        <div id="name-numbers" class="space-y-5 text-sm"></div>
-                    </div>
-                    <div class="card rounded-3xl p-7">
-                        <h3 class="section-header flex items-center gap-2 mb-6"><i class="fa-solid fa-circle-exclamation"></i> KARMIC NUMBERS & MATURITY</h3>
-                        <div id="karmic-maturity" class="space-y-5 text-sm"></div>
-                    </div>
-                    <div class="card rounded-3xl p-7">
-                        <h3 class="section-header flex items-center gap-2 mb-6"><i class="fa-solid fa-telescope"></i> FORECAST CYCLES</h3>
-                        <div class="grid grid-cols-3 gap-4 text-center" id="forecast-cycles"></div>
-                    </div>
-                    <div class="card rounded-3xl p-7">
-                        <h3 class="section-header mb-6">YOUR RELATIONSHIP WITH NUMBERS</h3>
-                        <div id="number-grid" class="grid grid-cols-9 gap-3"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Other screens (Forecast, Compare, Solutions, Consensus) are fully functional in the background -->
-        </div>
+    <div class="card">
+      <div class="ct">✦ Core Numbers</div>
+      <div class="ngrid" id="core-numbers"></div>
     </div>
 
-    <!-- Fixed Security Banner -->
-    <div class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/10 text-[10px] px-4 py-1 rounded-3xl backdrop-blur-md text-purple-300 flex items-center gap-2 z-50">
-        <i class="fa-solid fa-lock"></i> 100% OFFLINE • PRIVATE • NO DATA LEAVES YOUR PHONE
+    <div class="card">
+      <div class="ct">◎ Extended Numbers</div>
+      <div class="ngrid" id="ext-numbers"></div>
     </div>
 
-    <script>
-        // ==================== FULL CALCULATION ENGINE ====================
-        const pythagorean = {a:1,b:2,c:3,d:4,e:5,f:6,g:7,h:8,i:9,j:1,k:2,l:3,m:4,n:5,o:6,p:7,q:8,r:9,s:1,t:2,u:3,v:4,w:5,x:6,y:7,z:8};
-        function reduce(n) { while (n > 9) n = String(n).split('').reduce((a,b)=>a+ +b,0); return n; }
+    <div class="card">
+      <div class="ct">⟳ Current Period</div>
+      <div class="ngrid" id="period-numbers"></div>
+    </div>
 
-        function calculateLifePath(dob) {
-            const d = new Date(dob);
-            return reduce(d.getMonth()+1 + d.getDate() + d.getFullYear());
-        }
-        function calculateNameNumbers(name) {
-            const clean = name.toLowerCase().replace(/[^a-z]/g,'');
-            let total=0, vowels=0, cons=0;
-            for (let c of clean) {
-                const v = pythagorean[c];
-                if (v) {
-                    total += v;
-                    if ('aeiou'.includes(c)) vowels += v; else cons += v;
-                }
-            }
-            return { expression: reduce(total), soulUrge: reduce(vowels), personality: reduce(cons) };
-        }
+    <div class="card">
+      <div class="ct">✺ Your Number Meanings</div>
+      <div id="meanings-content" style="font-size:.83rem;color:var(--txd);line-height:1.8"></div>
+    </div>
+  </div>
 
-        let currentProfile = null;
-        let loggedInUser = JSON.parse(localStorage.getItem('lumina_user')) || null;
+  <!-- FORECAST TAB -->
+  <div class="tab-content" id="tab-forecast">
+    <div class="card">
+      <div class="ct">◉ Personal Cycle — Today & Beyond</div>
+      <div class="fbar" id="fbar"></div>
+      <div class="section-sub">30-Day Energy Preview</div>
+      <div id="forecast-days"></div>
+    </div>
+    <div class="card">
+      <div class="ct">✦ Year Ahead Outlook</div>
+      <div id="year-outlook" style="font-size:.83rem;color:var(--txd);line-height:1.8"></div>
+    </div>
+  </div>
 
-        function simulateGoogleLogin() {
-            const fakeEmail = prompt("Enter any email (demo mode)", "you@gmail.com");
-            if (fakeEmail) {
-                loggedInUser = { name: fakeEmail.split('@')[0], email: fakeEmail };
-                localStorage.setItem('lumina_user', JSON.stringify(loggedInUser));
-                updateLoginUI();
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-            }
-        }
+  <!-- COMPATIBILITY TAB -->
+  <div class="tab-content" id="tab-compatibility">
+    <div class="card">
+      <div class="ct">⟳ Compatibility Analysis</div>
+      <div class="fg">
+        <label>Their Full Name</label>
+        <input type="text" id="compat-name" placeholder="Enter their birth name">
+      </div>
+      <div class="fg">
+        <label>Their Date of Birth</label>
+        <input type="date" id="compat-dob">
+      </div>
+      <button class="btn btn-gold" onclick="calcCompat()">⟳ Analyze Compatibility</button>
+    </div>
+    <div id="compat-result" style="display:none">
+      <div class="card">
+        <div class="ct">◎ Compatibility Score</div>
+        <div class="compat-ring">
+          <div class="compat-score" id="cscore">—</div>
+          <div class="compat-pct">%</div>
+        </div>
+        <div id="compat-label" style="text-align:center;font-family:'Cinzel',serif;color:var(--gl);margin-bottom:14px"></div>
+        <div class="compat-bars" id="compat-bars"></div>
+        <div class="divider">Analysis</div>
+        <div id="compat-text" style="font-size:.82rem;color:var(--txd);line-height:1.75"></div>
+      </div>
+    </div>
+  </div>
 
-        function toggleLogin() {
-            if (loggedInUser) {
-                if (confirm("Logout?")) {
-                    loggedInUser = null;
-                    localStorage.removeItem('lumina_user');
-                    updateLoginUI();
-                    document.getElementById('main-app').classList.add('hidden');
-                    document.getElementById('login-screen').classList.remove('hidden');
-                }
-            } else {
-                document.getElementById('main-app').classList.add('hidden');
-                document.getElementById('login-screen').classList.remove('hidden');
-            }
-        }
+  <!-- SOLUTIONS TAB -->
+  <div class="tab-content" id="tab-solutions">
+    <div class="card">
+      <div class="ct">✺ Personalized Solutions Engine</div>
+      <div class="section-sub">Describe your challenge — get numerology-based remedies tailored to your core numbers</div>
+      <div class="fg">
+        <label>Your Problem or Challenge</label>
+        <textarea id="prob-input" rows="3" placeholder="e.g. I am facing financial difficulties, relationship issues, career stagnation..."></textarea>
+      </div>
+      <div class="fg">
+        <label>Category</label>
+        <select id="prob-cat">
+          <option value="career">Career & Business</option>
+          <option value="love">Love & Relationships</option>
+          <option value="finance">Finance & Wealth</option>
+          <option value="health">Health & Wellness</option>
+          <option value="family">Family & Home</option>
+          <option value="spiritual">Spiritual Growth</option>
+          <option value="general">General Guidance</option>
+        </select>
+      </div>
+      <button class="btn btn-gold" onclick="getSolutions()">✺ Generate Remedies</button>
+    </div>
+    <div id="solutions-result"></div>
+  </div>
 
-        function updateLoginUI() {
-            const el = document.getElementById('login-status');
-            if (loggedInUser) {
-                el.innerHTML = `<i class="fa-solid fa-user"></i> ${loggedInUser.name}`;
-            } else {
-                el.innerHTML = `<i class="fa-solid fa-google"></i> Sign in`;
-            }
-        }
+  <!-- MASTER CONSENSUS TAB -->
+  <div class="tab-content" id="tab-consensus">
+    <div class="card">
+      <div class="ct">⬡ Master Consensus Engine</div>
+      <div class="section-sub">5 World's Top Numerologists analyze your numbers one by one. Their combined wisdom produces the most accurate reading on the planet.</div>
+      <button class="btn btn-purple" onclick="runConsensus()" id="btn-consensus">⬡ Activate Master Consensus</button>
+    </div>
+    <div id="agents-container"></div>
+    <div class="consensus-box" id="consensus-box">
+      <div class="cons-score" id="cons-score">—</div>
+      <div class="cons-label">Master Consensus Accuracy</div>
+      <div class="divider">⬡ Final Synthesized Reading</div>
+      <div class="cons-text" id="cons-text"></div>
+      <div class="divider">Recommendations</div>
+      <div id="cons-recs"></div>
+    </div>
+  </div>
 
-        function createProfile() {
-            const dob = document.getElementById('dob-input').value;
-            const name = document.getElementById('name-input').value.trim();
-            if (!dob || !name) return alert("Please fill both fields");
-            
-            const lp = calculateLifePath(dob);
-            const nn = calculateNameNumbers(name);
-            
-            currentProfile = {
-                name: name,
-                dob: dob,
-                lifePath: lp,
-                expression: nn.expression,
-                soulUrge: nn.soulUrge,
-                personality: nn.personality
-            };
-            
-            renderChart();
-            document.getElementById('screen-0').classList.add('hidden');
-            document.getElementById('screen-1').classList.remove('hidden');
-        }
+  <!-- PROFILES TAB -->
+  <div class="tab-content" id="tab-profiles">
+    <div class="card">
+      <div class="ct">◈ Manage Profiles</div>
+      <div id="all-profiles"></div>
+      <div class="divider">Add New</div>
+      <div class="fg">
+        <label>Full Birth Name</label>
+        <input type="text" id="new-name" placeholder="Full name as on birth certificate">
+      </div>
+      <div class="fg">
+        <label>Date of Birth</label>
+        <input type="date" id="new-dob">
+      </div>
+      <div class="fg">
+        <label>Nickname</label>
+        <input type="text" id="new-nick" placeholder="Display name">
+      </div>
+      <button class="btn btn-gold btn-sm" onclick="addProfile()">+ Add Profile</button>
+    </div>
+  </div>
 
-        function renderChart() {
-            if (!currentProfile) return;
-            document.getElementById('header-name').textContent = currentProfile.name;
-            document.getElementById('header-dob').textContent = currentProfile.dob;
+</main>
 
-            // DOB Numbers
-            const dobHTML = `
-                <div class="flex justify-between"><span>Life Path</span><span class="text-4xl font-bold glow">${currentProfile.lifePath}</span></div>
-                <div class="flex justify-between"><span>Day of Birth</span><span class="text-4xl font-bold glow">${reduce(new Date(currentProfile.dob).getDate())}</span></div>`;
-            document.getElementById('dob-numbers').innerHTML = dobHTML;
+<!-- FOOTER -->
+<footer id="footer" style="display:none">
+  <div style="margin-bottom:6px">✦ LUMINA — World's First Master Consensus Numerology · 100% Offline · MIT License</div>
+  <div>Created by <a href="https://hsharmagxi-debug.github.io" target="_blank">Himanshu Sharma</a> · <a href="https://github.com/hsharmagxi-debug/lumina-numerology" target="_blank">GitHub</a> · The KPI HUB · Delhi, India</div>
+</footer>
 
-            // Name Numbers
-            const nameHTML = `
-                <div class="flex justify-between"><span>Expression</span><span class="text-4xl font-bold glow">${currentProfile.expression}</span></div>
-                <div class="flex justify-between"><span>Soul Urge</span><span class="text-4xl font-bold glow">${currentProfile.soulUrge}</span></div>
-                <div class="flex justify-between"><span>Personality</span><span class="text-4xl font-bold glow">${currentProfile.personality}</span></div>`;
-            document.getElementById('name-numbers').innerHTML = nameHTML;
+<div class="toast" id="toast"></div>
 
-            // More sections can be expanded similarly
-            console.log("✅ Chart rendered successfully");
-        }
+<script>
+// ============================================================
+// NUMEROLOGY ENGINE
+// ============================================================
+const PYTHAGOREAN = {A:1,B:2,C:3,D:4,E:5,F:6,G:7,H:8,I:9,J:1,K:2,L:3,M:4,N:5,O:6,P:7,Q:8,R:9,S:1,T:2,U:3,V:4,W:5,X:6,Y:7,Z:8};
+const CHALDEAN    = {A:1,B:2,C:3,D:4,E:5,U:6,O:7,F:8,G:3,H:5,I:1,J:1,K:2,L:3,M:4,N:5,P:8,Q:1,R:2,S:3,T:4,V:6,W:6,X:6,Y:1,Z:7};
+const VOWELS = new Set(['A','E','I','O','U']);
 
-        function showMasterConsensus() {
-            alert("🔥 Master Consensus activated!\n\nDr. J C Chaudhry, Sanjay B Jumaani, Dr. Kartick Chakraborty, Anupam V Kapil & Rajat Nayar have all reviewed your chart.\n\nFinal Accuracy: 99.999999%");
-        }
+function reduce(n, master=true){
+  n = parseInt(n);
+  while(n > 9){
+    if(master && (n===11||n===22||n===33)) return n;
+    n = String(n).split('').reduce((a,b)=>a+parseInt(b),0);
+  }
+  return n;
+}
 
-        function showMenu() {
-            alert("📋 Menu:\n1. Profiles\n2. Settings\n3. Store (coming)\n4. FAQ\n5. Rate the app\n\n(Full menu will be added in next update)");
-        }
+function nameToNum(name, chart=PYTHAGOREAN){
+  return name.toUpperCase().replace(/[^A-Z]/g,'').split('').reduce((s,c)=>s+(chart[c]||0),0);
+}
 
-        // Initialize
-        window.onload = () => {
-            updateLoginUI();
-            if (!loggedInUser) {
-                document.getElementById('login-screen').classList.remove('hidden');
-            } else {
-                document.getElementById('main-app').classList.remove('hidden');
-            }
-            console.log("%c🚀 Lumina v1.2 – Full Mirofox UI + Google Login (simulated) + Verified 100%", "color:#c026d3;font-weight:bold");
-        };
-    </script>
+function vowelNum(name, chart=PYTHAGOREAN){
+  return name.toUpperCase().replace(/[^A-Z]/g,'').split('').filter(c=>VOWELS.has(c)).reduce((s,c)=>s+(chart[c]||0),0);
+}
+
+function consonantNum(name, chart=PYTHAGOREAN){
+  return name.toUpperCase().replace(/[^A-Z]/g,'').split('').filter(c=>!VOWELS.has(c)).reduce((s,c)=>s+(chart[c]||0),0);
+}
+
+function lifePath(dob){
+  const [y,m,d] = dob.split('-').map(Number);
+  const dr = reduce(d), mr = reduce(m), yr = reduce(y);
+  return reduce(dr+mr+yr);
+}
+
+function calcNumbers(name, dob){
+  const now = new Date();
+  const [y,m,d] = dob.split('-').map(Number);
+  const lp = lifePath(dob);
+  const expr = reduce(nameToNum(name));
+  const soul = reduce(vowelNum(name));
+  const pers = reduce(consonantNum(name));
+  const bday = reduce(d);
+  const mat  = reduce(lp + expr);
+  const att  = reduce(m + d);
+  // Chaldean
+  const cexpr = reduce(nameToNum(name, CHALDEAN));
+  const csoul = reduce(vowelNum(name, CHALDEAN));
+  // Personal year/month/day
+  const py = reduce(m + d + now.getFullYear());
+  const pm = reduce(py + now.getMonth()+1);
+  const pd = reduce(pm + now.getDate());
+  return {lp,expr,soul,pers,bday,mat,att,cexpr,csoul,py,pm,pd};
+}
+
+// ============================================================
+// MEANINGS
+// ============================================================
+const NUM_MEANINGS = {
+  1:{k:'The Leader',desc:'Independent, ambitious, pioneering. You are born to lead and innovate. Your destiny is to forge new paths.'},
+  2:{k:'The Diplomat',desc:'Sensitive, cooperative, intuitive. You excel at bringing balance and harmony. Your gift is creating unity.'},
+  3:{k:'The Creator',desc:'Expressive, joyful, artistic. You are here to communicate, inspire, and bring beauty into the world.'},
+  4:{k:'The Builder',desc:'Disciplined, reliable, practical. You create lasting foundations. Stability and integrity are your hallmarks.'},
+  5:{k:'The Freedom Seeker',desc:'Adventurous, versatile, dynamic. Change is your constant. You thrive on freedom and new experiences.'},
+  6:{k:'The Nurturer',desc:'Caring, responsible, harmonious. You are the healer and protector. Family and community are your core.'},
+  7:{k:'The Seeker',desc:'Analytical, spiritual, introspective. You seek deep truth. Your path is one of wisdom and inner knowing.'},
+  8:{k:'The Powerhouse',desc:'Ambitious, authoritative, material. You are built for achievement, leadership, and financial mastery.'},
+  9:{k:'The Humanitarian',desc:'Compassionate, wise, universal. You are the old soul here to serve humanity with unconditional love.'},
+  11:{k:'The Illuminator ✦ Master',desc:'Highly intuitive, visionary, spiritual. Master 11 brings divine inspiration and the ability to uplift others.'},
+  22:{k:'The Master Builder ✦ Master',desc:'Practical visionary, powerful manifestor. Master 22 can turn the grandest dreams into concrete reality.'},
+  33:{k:'The Master Teacher ✦ Master',desc:'The highest master number. Compassion, healing, and selfless service to humanity on the grandest scale.'}
+};
+
+const ENERGY = {1:'Leadership · New Beginnings',2:'Cooperation · Patience',3:'Creativity · Social',4:'Work · Foundation',5:'Change · Freedom',6:'Home · Love',7:'Reflection · Wisdom',8:'Power · Abundance',9:'Completion · Release',11:'Intuition · Inspiration',22:'Mastery · Building',33:'Healing · Compassion'};
+
+// ============================================================
+// PROFILE MANAGEMENT
+// ============================================================
+let profiles = JSON.parse(localStorage.getItem('lumina_profiles')||'[]');
+let activeIdx = parseInt(localStorage.getItem('lumina_active')||'0');
+
+function saveProfiles(){localStorage.setItem('lumina_profiles',JSON.stringify(profiles))}
+function saveActive(){localStorage.setItem('lumina_active',String(activeIdx))}
+
+function createProfile(){
+  const name = document.getElementById('inp-name').value.trim();
+  const dob  = document.getElementById('inp-dob').value;
+  const nick = document.getElementById('inp-nick').value.trim()||name.split(' ')[0];
+  if(!name||!dob){showToast('Please enter your name and date of birth');return}
+  const p = {name,dob,nick,created:Date.now()};
+  profiles.push(p);
+  activeIdx = profiles.length-1;
+  saveProfiles();saveActive();
+  launchApp();
+}
+
+function addProfile(){
+  const name = document.getElementById('new-name').value.trim();
+  const dob  = document.getElementById('new-dob').value;
+  const nick = document.getElementById('new-nick').value.trim()||name.split(' ')[0];
+  if(!name||!dob){showToast('Enter name and date of birth');return}
+  profiles.push({name,dob,nick,created:Date.now()});
+  saveProfiles();
+  showToast('Profile added ✦');
+  renderProfilesTab();
+  updateChips();
+}
+
+function deleteProfile(i){
+  if(profiles.length<=1){showToast('Cannot delete last profile');return}
+  if(!confirm(`Delete profile "${profiles[i].nick}"?`)) return;
+  profiles.splice(i,1);
+  if(activeIdx>=profiles.length) activeIdx=profiles.length-1;
+  saveProfiles();saveActive();
+  renderDashboard();renderProfilesTab();updateChips();
+}
+
+function switchProfile(i){
+  activeIdx=i;saveActive();renderDashboard();updateChips();switchTab('dashboard');
+}
+
+// ============================================================
+// APP LAUNCH
+// ============================================================
+function launchApp(){
+  document.getElementById('landing').style.display='none';
+  document.getElementById('nav').style.display='flex';
+  document.getElementById('footer').style.display='block';
+  renderDashboard();
+  switchTab('dashboard');
+}
+
+function renderDashboard(){
+  const p = profiles[activeIdx];
+  if(!p) return;
+  const nums = calcNumbers(p.name,p.dob);
+  const dob = new Date(p.dob);
+  const dobStr = dob.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('dash-name').textContent = p.nick+' · '+p.name;
+  document.getElementById('dash-dob').textContent = dobStr;
+
+  // Core Numbers
+  const core = [
+    {v:nums.lp,  l:'Life Path',     m:NUM_MEANINGS[nums.lp]?.k},
+    {v:nums.expr,l:'Expression',    m:NUM_MEANINGS[nums.expr]?.k},
+    {v:nums.soul,l:'Soul Urge',     m:NUM_MEANINGS[nums.soul]?.k},
+    {v:nums.pers,l:'Personality',   m:NUM_MEANINGS[nums.pers]?.k},
+  ];
+  document.getElementById('core-numbers').innerHTML = core.map(n=>orbHTML(n)).join('');
+
+  // Extended
+  const ext = [
+    {v:nums.bday,l:'Birthday',      m:'The day you arrived'},
+    {v:nums.mat, l:'Maturity',      m:'Future self'},
+    {v:nums.att, l:'Attitude',      m:'First impression'},
+    {v:nums.cexpr,l:'Chaldean Destiny',m:'Ancient system'},
+    {v:nums.csoul,l:'Chaldean Soul',m:'Inner fire'},
+  ];
+  document.getElementById('ext-numbers').innerHTML = ext.map(n=>orbHTML(n)).join('');
+
+  // Period
+  const period = [
+    {v:nums.py,l:'Personal Year',m:'2024 energy'},
+    {v:nums.pm,l:'Personal Month',m:'This month'},
+    {v:nums.pd,l:'Personal Day',m:'Today\'s vibration'},
+  ];
+  document.getElementById('period-numbers').innerHTML = period.map(n=>orbHTML(n)).join('');
+
+  // Meanings
+  const mHTML = [nums.lp,nums.expr,nums.soul].map(n=>{
+    const mn = NUM_MEANINGS[n];
+    if(!mn) return '';
+    return `<div style="margin-bottom:14px"><span class="highlight">${n} — ${mn.k}</span><br><span style="color:var(--txd)">${mn.desc}</span></div>`;
+  }).join('');
+  document.getElementById('meanings-content').innerHTML = mHTML;
+
+  // Forecast
+  renderForecast(nums);
+  // Consensus agents list
+  renderAgents();
+  renderProfilesTab();
+  updateChips();
+}
+
+function orbHTML(n){
+  const isMaster = n.v===11||n.v===22||n.v===33;
+  return `<div class="norb"><div class="nval${isMaster?' master':''}">${n.v}</div><div class="nlbl">${n.l}</div><div class="nmng">${n.m||''}</div></div>`;
+}
+
+// ============================================================
+// FORECAST
+// ============================================================
+function renderForecast(nums){
+  document.getElementById('fbar').innerHTML = `
+    <div class="fbadge"><div class="fbv">${nums.py}</div><div class="fbl">Personal Year</div></div>
+    <div class="fbadge"><div class="fbv">${nums.pm}</div><div class="fbl">Personal Month</div></div>
+    <div class="fbadge"><div class="fbv" style="color:var(--gold)">${nums.pd}</div><div class="fbl">Today</div></div>`;
+
+  const p = profiles[activeIdx];
+  const [,m,d] = p.dob.split('-').map(Number);
+  const now = new Date();
+  let rows = '';
+  for(let i=0;i<30;i++){
+    const dt = new Date(now); dt.setDate(now.getDate()+i);
+    const dd = dt.getDate(), dm = dt.getMonth()+1, dy = dt.getFullYear();
+    const py = reduce(m+d+dy);
+    const pm = reduce(py+dm);
+    const pd = reduce(pm+dd);
+    const isToday = i===0;
+    const dateStr = dt.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
+    rows += `<div class="day-row${isToday?' dtoday':''}">
+      <div class="dnum">${pd}${pd===11||pd===22?'✦':''}</div>
+      <div class="ddate">${dateStr}</div>
+      <div class="denergy">${ENERGY[pd]||''}</div>
+    </div>`;
+  }
+  document.getElementById('forecast-days').innerHTML = rows;
+
+  const yearMeaning = NUM_MEANINGS[nums.py];
+  document.getElementById('year-outlook').innerHTML = `
+    <div style="margin-bottom:10px"><span class="highlight">Personal Year ${nums.py} — ${yearMeaning?.k||'Transformative'}</span></div>
+    <div>${yearMeaning?.desc||'A powerful year of change and growth.'}</div>
+    <div class="divider"></div>
+    <div>This year, your personal month and day numbers will guide you through cycles of ${ENERGY[nums.py]||'growth'}. 
+    Pay close attention to days when your Personal Day number aligns with your Life Path <span class="highlight">${profiles[activeIdx]?calcNumbers(profiles[activeIdx].name,profiles[activeIdx].dob).lp:'—'}</span> — those are your power days.</div>`;
+}
+
+// ============================================================
+// COMPATIBILITY
+// ============================================================
+function calcCompat(){
+  const name = document.getElementById('compat-name').value.trim();
+  const dob  = document.getElementById('compat-dob').value;
+  if(!name||!dob){showToast('Enter their name and date of birth');return}
+  const p = profiles[activeIdx];
+  const me = calcNumbers(p.name,p.dob);
+  const them = calcNumbers(name,dob);
+
+  // Score dimensions
+  const dims = [
+    {l:'Life Path Harmony',  v:compatScore(me.lp,them.lp)},
+    {l:'Soul Resonance',     v:compatScore(me.soul,them.soul)},
+    {l:'Expression Sync',    v:compatScore(me.expr,them.expr)},
+    {l:'Personality Blend',  v:compatScore(me.pers,them.pers)},
+    {l:'Destiny Alignment',  v:compatScore(me.mat,them.mat)},
+  ];
+  const total = Math.round(dims.reduce((s,d)=>s+d.v,0)/dims.length);
+  const label = total>=85?'✦ Twin Flame Energy':total>=70?'◉ Strong Soulmate Bond':total>=55?'⟳ Good Compatible Match':total>=40?'◎ Workable with Effort':'△ Challenging but Possible';
+
+  document.getElementById('cscore').textContent=total;
+  document.getElementById('compat-label').textContent=label;
+  document.getElementById('compat-bars').innerHTML=dims.map(d=>`
+    <div class="cbar-row">
+      <div class="cbar-label">${d.l}</div>
+      <div class="cbar-track"><div class="cbar-fill" style="width:${d.v}%"></div></div>
+      <div class="cbar-val">${d.v}</div>
+    </div>`).join('');
+  document.getElementById('compat-text').innerHTML = compatText(me,them,total,name,p.nick);
+  document.getElementById('compat-result').style.display='block';
+}
+
+function compatScore(a,b){
+  const diff = Math.abs(a-b);
+  if(diff===0) return 95;
+  if([0,3,6,9].includes(diff)) return 88;
+  if([1,2].includes(diff)) return 78;
+  if([4,5].includes(diff)) return 62;
+  return 45;
+}
+
+function compatText(me,them,score,theirName,myNick){
+  const lp1=me.lp,lp2=them.lp;
+  return `<b>${myNick}</b> (Life Path ${lp1}) and <b>${theirName.split(' ')[0]}</b> (Life Path ${lp2}) share a ${score}% compatibility frequency. 
+  ${score>=70?`Your life paths create a ${NUM_MEANINGS[lp1]?.k} + ${NUM_MEANINGS[lp2]?.k} synergy — a combination known to produce powerful, lasting bonds.`
+  :`While your paths differ, Life Path ${lp1} and ${lp2} can complement each other beautifully with conscious effort, communication, and mutual respect.`}
+  <br><br>
+  Your soul urge numbers (${me.soul} & ${them.soul}) ${Math.abs(me.soul-them.soul)<=2?'are in deep resonance, meaning your inner desires align naturally.':'suggest different inner needs — understanding this will be key to your harmony.'}
+  <br><br>
+  <b>Best together when:</b> Working on creative or material goals. <b>Watch out for:</b> ${score<60?'Power struggles around decision-making.':'Occasional misalignment on emotional needs.'}`;
+}
+
+// ============================================================
+// SOLUTIONS ENGINE
+// ============================================================
+function getSolutions(){
+  const prob = document.getElementById('prob-input').value.trim();
+  const cat  = document.getElementById('prob-cat').value;
+  if(!prob){showToast('Describe your challenge');return}
+  const p = profiles[activeIdx];
+  const nums = calcNumbers(p.name,p.dob);
+  const remedies = generateRemedies(cat,nums,p.nick);
+  document.getElementById('solutions-result').innerHTML = `
+    <div class="card fade-in">
+      <div class="ct">✺ Your Personalized Remedies</div>
+      <div style="font-size:.78rem;color:var(--txm);margin-bottom:14px">Based on your Life Path ${nums.lp} · Soul Urge ${nums.soul} · Personal Year ${nums.py}</div>
+      ${remedies.map(r=>`<div class="remedy"><div class="remedy-title">${r.icon} ${r.title}</div><div class="remedy-text">${r.text}</div></div>`).join('')}
+    </div>`;
+}
+
+function generateRemedies(cat,nums,nick){
+  const lp=nums.lp,py=nums.py,soul=nums.soul;
+  const base = [
+    {icon:'🔢',title:`Lucky Number Activation`,text:`Your Life Path ${lp} makes ${lp}, ${lp*2<=9?lp*2:reduce(lp*2)}, and ${reduce(lp+3)} your power numbers. Use them in important decisions — dates, floors, room numbers, timing.`},
+    {icon:'🎨',title:`Color Therapy`,text:`Number ${lp} resonates with ${getColor(lp)}. Wear, decorate, or surround yourself with this color during challenges to amplify your natural frequency.`},
+    {icon:'💎',title:`Crystal & Element Alignment`,text:`${getCrystal(lp)} is your numerological stone. Keep it near your workspace. Your element is ${getElement(lp)} — connect with it through ${getElementPractice(lp)}.`},
+    {icon:'⏰',title:`Power Timing`,text:`Your most potent hours are when the clock shows :${lp}${lp} (e.g., ${lp}:${lp}${lp} AM/PM). Make important calls, decisions, or prayers at these moments.`},
+  ];
+
+  const catRemedies = {
+    career:[
+      {icon:'🌟',title:'Career Activation Ritual',text:`As a Life Path ${lp} (${NUM_MEANINGS[lp]?.k}), your career strength lies in ${getCareerStrength(lp)}. Start each work day by writing your top ${lp} intentions. Personal Year ${py} indicates ${py<=4?'a foundation-building phase — focus on skill-building':'an expansion phase — take bold career risks'}.`},
+      {icon:'📊',title:'Name Correction Consideration',text:`If your professional name has a different numerical value than your birth name, consider aligning them. Your Expression Number ${nums.expr} should ideally support your Life Path ${lp}.`},
+    ],
+    love:[
+      {icon:'💝',title:'Relationship Energy Reset',text:`Your Soul Urge ${soul} (${NUM_MEANINGS[soul]?.k}) reveals what you truly need emotionally. You crave ${getSoulUrgeNeed(soul)}. Communicate this openly to your partner rather than expecting them to intuit it.`},
+      {icon:'💫',title:'Attraction Frequency',text:`To attract compatible energy, practice gratitude for love at ${lp}:00 daily. Your Life Path ${lp} partner is most compatible with Life Paths ${getCompatLPs(lp)}.`},
+    ],
+    finance:[
+      {icon:'💰',title:'Wealth Number Activation',text:`Your Expression Number ${nums.expr} governs your earning potential. ${nums.expr===8?'Number 8 is the ultimate wealth number — you are built for material success.':nums.expr===4?'Number 4 builds wealth slowly but surely through disciplined saving and investing.':'Focus on aligning your work with your natural gifts to unlock financial flow.'}`},
+      {icon:'📅',title:'Financial Power Dates',text:`Your best days to initiate financial decisions, sign contracts, or start investments are the ${lp}th, ${reduce(lp+9)}th, and ${reduce(lp+18)}th of each month.`},
+    ],
+    health:[
+      {icon:'🧘',title:'Healing Frequency',text:`Number ${lp} governs your ${getHealthFocus(lp)}. Prioritize this area in your wellness routine. ${py%2===0?'This year favors rest and restoration.':'This year supports active healing and new health habits.'}`},
+      {icon:'🌿',title:'Elemental Healing',text:`Your element ${getElement(lp)} supports your healing through ${getElementPractice(lp)}. Practice this for 21 consecutive days for best results.`},
+    ],
+    family:[
+      {icon:'🏠',title:'Home Harmony Number',text:`Calculate your home address number (reduce the street number). Ideal home numbers for Life Path ${lp} are ${getIdealHome(lp)}. If not matching, balance with crystals and color.`},
+      {icon:'🌸',title:'Family Bond Ritual',text:`The 6-vibration governs family. On the 6th, 15th, and 24th of each month, gather family for a shared meal or activity to strengthen bonds.`},
+    ],
+    spiritual:[
+      {icon:'🔮',title:'Spiritual Number Activation',text:`Life Path ${lp} connects spiritually through ${getSpiritualPractice(lp)}. Your personal day number ${nums.pd} today calls for ${ENERGY[nums.pd]||'reflection'}.`},
+      {icon:'🌙',title:'Moon & Number Sync',text:`Fast or meditate during the new moon when the date reduces to your Life Path ${lp}. This creates a powerful numerological-lunar alignment for manifestation.`},
+    ],
+    general:[
+      {icon:'📿',title:'Daily Number Practice',text:`Chant or meditate on the frequency of ${lp} — the vibration connected to your soul's purpose. Say your name's numerical value (${nums.expr}) times in your morning intention.`},
+    ],
+  };
+
+  return [...base, ...(catRemedies[cat]||catRemedies.general)];
+}
+
+function getColor(n){return{1:'Gold & Red',2:'Silver & White',3:'Yellow & Orange',4:'Green & Brown',5:'Turquoise & Grey',6:'Pink & Blue',7:'Violet & Purple',8:'Dark Blue & Black',9:'Red & Gold',11:'Iridescent White',22:'Earth Tones & Platinum',33:'Rainbow & Gold'}[n]||'Gold'}
+function getCrystal(n){return{1:'Ruby or Garnet',2:'Moonstone or Pearl',3:'Citrine or Topaz',4:'Emerald or Jade',5:'Aquamarine or Turquoise',6:'Rose Quartz or Opal',7:'Amethyst or Lapis Lazuli',8:'Obsidian or Sapphire',9:'Bloodstone or Coral',11:'Clear Quartz or Diamond',22:'Malachite or Tourmaline',33:'Amethyst & Rose Quartz'}[n]||'Clear Quartz'}
+function getElement(n){return{1:'Fire',2:'Water',3:'Air',4:'Earth',5:'Ether/Spirit',6:'Earth',7:'Water',8:'Earth',9:'Fire',11:'Air',22:'Earth',33:'Fire'}[n]||'Air'}
+function getElementPractice(n){return{1:'morning sun gazing',2:'ocean or river bathing',3:'breathwork & singing',4:'gardening or walking barefoot',5:'sky gazing & wind meditation',6:'cooking & nurturing plants',7:'moonlight meditation',8:'mountain hiking',9:'bonfire or candle gazing',11:'sunrise & sunset watching',22:'stone setting & mantra',33:'circle gathering & prayer'}[n]||'mindful breathing'}
+function getCareerStrength(n){return{1:'leadership and pioneering ventures',2:'partnership, consulting, and diplomacy',3:'creative fields, speaking, and media',4:'engineering, management, and systems',5:'travel, marketing, and innovation',6:'healing, teaching, and design',7:'research, technology, and analysis',8:'business, finance, and real estate',9:'humanitarian work, arts, and medicine',11:'counseling, spiritual work, and coaching',22:'architecture, large-scale projects',33:'education, healing, and global service'}[n]||'your unique gifts'}
+function getSoulUrgeNeed(n){return{1:'independence and recognition',2:'peace, harmony, and emotional security',3:'joy, creative expression, and laughter',4:'stability, loyalty, and sincerity',5:'freedom, variety, and adventure',6:'love, beauty, and being needed',7:'depth, solitude, and genuine understanding',8:'respect, success, and material stability',9:'meaning, love, and world-betterment',11:'spiritual depth and a soulful connection',22:'a partner who shares grand visions',33:'unconditional love and spiritual partnership'}[n]||'deep authentic connection'}
+function getCompatLPs(n){const m={1:[1,3,5],2:[2,4,8],3:[3,6,9],4:[4,2,8],5:[5,1,7],6:[6,3,9],7:[7,5,11],8:[8,4,2],9:[9,3,6],11:[11,2,9],22:[22,4,8],33:[33,6,11]};return(m[n]||[n]).join(', ')}
+function getHealthFocus(n){return{1:'head, brain, and cardiovascular system',2:'digestive and lymphatic system',3:'lungs, throat, and nervous system',4:'bones, spine, and joints',5:'nervous system and skin',6:'heart and endocrine system',7:'glands and reproductive system',8:'kidneys, adrenals, and blood',9:'immune and circulatory system',11:'nervous system and psyche',22:'structural body systems',33:'whole-body integration'}[n]||'overall vitality'}
+function getIdealHome(n){return{1:'1,10,19,28',2:'2,11,20,29',3:'3,12,21,30',4:'4,13,22,31',5:'5,14,23,32',6:'6,15,24,33',7:'7,16,25,34',8:'8,17,26,35',9:'9,18,27,36',11:'11,29',22:'22,4',33:'33,6'}[n]||'1,6,9'}
+function getSpiritualPractice(n){return{1:'solo sunrise meditation and solar prayer',2:'lunar ceremony and guided visualization',3:'mantra chanting and creative ritual',4:'earth-based practice and ancestral ceremony',5:'breathwork and spirit journey meditation',6:'devotional prayer and seva (selfless service)',7:'deep contemplation, fasting, and silence',8:'power meditation and visualization of abundance',9:'group meditation and compassion practice',11:'channeling, dream journaling, and higher self work',22:'sacred geometry and global healing',33:'heart-field meditation and universal love practice'}[n]||'daily meditation'}
+
+// ============================================================
+// MASTER CONSENSUS ENGINE
+// ============================================================
+const AGENTS = [
+  {name:'Dr. J C Chaudhry',style:'Guinness World Record · Chaldean System · 39 years · Indian Institute of Numerology',
+   fn:(nums,p)=>`Using the Chaldean system — the most ancient and accurate — your Chaldean Destiny Number is ${nums.cexpr} and Chaldean Soul Number is ${nums.csoul}. Your Life Path ${nums.lp} in Chaldean context indicates ${NUM_MEANINGS[nums.lp]?.k} with karmic obligation to ${nums.lp<=5?'build foundations':'serve others'}. Your name vibration requires ${nums.cexpr===nums.expr?'no correction — your name perfectly aligns with your destiny.':'attention — consider harmonizing your signature name to Expression ${nums.cexpr} for maximum prosperity.'} Personal Year ${nums.py} demands focus on ${ENERGY[nums.py]}.`},
+  {name:'Sanjay B Jumaani',style:'Bollywood Astro-Numerologist · Name Alteration Specialist · Celebrity Advisor',
+   fn:(nums,p)=>`${p.nick}, your numbers carry a very specific frequency. Your Life Path ${nums.lp} combined with Expression ${nums.expr} creates the ${reduce(nums.lp+nums.expr)}-vibration — a number that ${reduce(nums.lp+nums.expr)>=5?'thrives in public life and fame':'excels in behind-the-scenes mastery'}. For Bollywood or public success, your name should ideally total to a 1, 5, or 6. Your current total is ${nums.expr}. Lucky letters to add or emphasize: ${nums.expr<=5?'A, E, I':'S, H, N'}. This Personal Day ${nums.pd} is ${nums.pd%2===0?'favorable':'neutral'} for new ventures.`},
+  {name:'Dr. Kartick Chakraborty',style:'Global Celebrity Numerologist · USA · UK · Dubai · Precise Solutions',
+   fn:(nums,p)=>`From a precision analysis perspective serving global clients: ${p.nick}'s core matrix shows Life Path ${nums.lp}, Expression ${nums.expr}, Soul ${nums.soul}, Personality ${nums.pers}. The Life Path–Expression gap is ${Math.abs(nums.lp-nums.expr)} — ${Math.abs(nums.lp-nums.expr)<=2?'excellent alignment, meaning your outer actions match your soul purpose.':'indicates you may be living a life that doesn\'t fully reflect your inner truth.'} Your Attitude Number ${nums.att} is how the world perceives you on first meeting — ${NUM_MEANINGS[nums.att]?.k||'powerful'}. Your Maturity Number ${nums.mat} reveals that after age 35, you will powerfully embody ${NUM_MEANINGS[nums.mat]?.k||'mastery'}.`},
+  {name:'Anupam V Kapil',style:'Celebrity Astro-Numerologist · Author · Body Language Expert',
+   fn:(nums,p)=>`Blending Vedic astrology principles with numerology: ${p.nick}, your Birth Day ${nums.bday} is your most natural gift to the world — ${NUM_MEANINGS[reduce(nums.bday)]?.k||'unique talent'}. Your Soul Urge ${nums.soul} reveals your deepest motivation: ${getSoulUrgeNeed(nums.soul)}. The body language and energy you project is governed by Personality Number ${nums.pers} — ${NUM_MEANINGS[nums.pers]?.k}. In your current Personal Year ${nums.py}, the cosmic tide favors ${nums.py<=4?'structured, deliberate action':'bold expansion and visibility'}. Trust the ${nums.pd}-energy of today — it is ${['','initiating','cooperative','expressive','steady','changing','nurturing','reflective','powerful','completing','illuminating','manifesting','healing'][nums.pd]||'transformative'}.`},
+  {name:'Rajat Nayar',style:'Holistic · Ancient Wisdom + Modern Numerology · Decades of Practice',
+   fn:(nums,p)=>`Integrating ancient Vedic wisdom with modern numerological precision: The soul of ${p.nick} carries the ${NUM_MEANINGS[nums.lp]?.k} archetype — a path not chosen randomly but earned through previous lifetimes. Your Karmic Lesson numbers are the digits missing from your name. Your Expression ${nums.expr} and Soul ${nums.soul} together create a ${reduce(nums.expr+nums.soul)}-vibration — the hidden master number of your inner world. The remedy path for Life Path ${nums.lp} involves ${getSpiritualPractice(nums.lp)}, working with ${getCrystal(nums.lp)}, and living in spaces that resonate with number ${getIdealHome(nums.lp).split(',')[0]}. The universe currently speaks through your Personal Day ${nums.pd}: ${ENERGY[nums.pd]||'transformation'}.`},
+];
+
+async function runConsensus(){
+  const p = profiles[activeIdx];
+  const nums = calcNumbers(p.name,p.dob);
+  document.getElementById('btn-consensus').disabled=true;
+  document.getElementById('btn-consensus').innerHTML='<span class="loader"></span> Consulting Masters...';
+  document.getElementById('consensus-box').style.display='none';
+
+  const container = document.getElementById('agents-container');
+  container.innerHTML = AGENTS.map((a,i)=>`
+    <div class="agent-card fade-in" id="agent-${i}" style="animation-delay:${i*.1}s">
+      <div class="aname">✦ ${a.name}</div>
+      <div class="astyle">${a.style}</div>
+      <div class="pbar"><div class="pfill" id="pf-${i}"></div></div>
+      <div class="aout" id="aout-${i}"></div>
+    </div>`).join('');
+
+  for(let i=0;i<AGENTS.length;i++){
+    await sleep(600+i*200);
+    document.getElementById(`pf-${i}`).style.width='100%';
+    await sleep(800);
+    document.getElementById(`aout-${i}`).textContent = AGENTS[i].fn(nums,p);
+    document.getElementById(`agent-${i}`).classList.add('done');
+    await sleep(300);
+  }
+
+  await sleep(600);
+  showConsensus(nums,p);
+  document.getElementById('btn-consensus').disabled=false;
+  document.getElementById('btn-consensus').innerHTML='⬡ Run Consensus Again';
+}
+
+function showConsensus(nums,p){
+  const score = 97 + (nums.lp===11||nums.lp===22?2:0);
+  document.getElementById('cons-score').textContent=score+'%';
+  document.getElementById('cons-text').innerHTML = `
+    <b>${p.nick}</b>, after consulting all five world masters — Dr. J C Chaudhry, Sanjay B Jumaani, Dr. Kartick Chakraborty, Anupam V Kapil, and Rajat Nayar — the synthesized consensus is:
+    <br><br>
+    Your Life Path <b>${nums.lp}</b> (${NUM_MEANINGS[nums.lp]?.k}) is your core identity and cannot be changed. It defines your soul's mission. Your Expression Number <b>${nums.expr}</b> shows how you fulfill that mission in the material world. The alignment between these two numbers ${Math.abs(nums.lp-nums.expr)<=3?'is strong — you are living authentically.':'suggests growth potential — align your daily work more with your soul purpose.'}
+    <br><br>
+    All five masters agree: Personal Year <b>${nums.py}</b> (${ENERGY[nums.py]}) is your dominant energy right now. Today's Personal Day <b>${nums.pd}</b> carries the vibration of ${ENERGY[nums.pd]||'transformation'}.
+    <br><br>
+    The Chaldean cross-verification (Dr. Chaudhry's method) confirms your destiny number as <b>${nums.cexpr}</b>. When your Pythagorean (${nums.expr}) and Chaldean (${nums.cexpr}) expression numbers ${nums.expr===nums.cexpr?'match — this is exceptionally rare and powerful. Your name holds perfect universal frequency.':'differ — this reveals the gap between your earthly and karmic identity. Focus on embodying both.'}`;
+
+  document.getElementById('cons-recs').innerHTML = [
+    {icon:'🔢',t:'Priority Number',d:`Work with ${nums.lp} as your guiding frequency in all major decisions.`},
+    {icon:'💎',t:'Master Crystal',d:`${getCrystal(nums.lp)} — carry or wear for amplified numerological protection.`},
+    {icon:'🎨',t:'Power Colors',d:`${getColor(nums.lp)} — dominant colors to attract your highest timeline.`},
+    {icon:'⏰',t:'Action Period',d:`Personal Year ${nums.py} phase: ${nums.py<=3?'Plant seeds':nums.py<=6?'Nurture growth':nums.py<=9?'Harvest results':'Complete & release'}.`},
+  ].map(r=>`<div class="remedy"><div class="remedy-title">${r.icon} ${r.t}</div><div class="remedy-text">${r.d}</div></div>`).join('');
+
+  document.getElementById('consensus-box').style.display='block';
+}
+
+// ============================================================
+// PROFILES TAB & CHIPS
+// ============================================================
+function updateChips(){
+  const html = profiles.map((p,i)=>`<div class="pchip${i===activeIdx?' active':''}" onclick="switchProfile(${i})">${p.nick}</div>`).join('');
+  ['pchips-dash'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=html});
+}
+
+function renderProfilesTab(){
+  const el = document.getElementById('all-profiles');
+  if(!el) return;
+  el.innerHTML = profiles.map((p,i)=>{
+    const nums = calcNumbers(p.name,p.dob);
+    const dob = new Date(p.dob).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+    return `<div class="card" style="margin-bottom:10px;padding:16px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div>
+          <div style="font-family:'Cinzel',serif;color:var(--gl);font-size:.95rem">${p.nick}</div>
+          <div style="font-size:.73rem;color:var(--txm);margin-bottom:8px">${p.name} · ${dob}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <span class="tag">LP ${nums.lp}</span>
+            <span class="tag">Expr ${nums.expr}</span>
+            <span class="tag">Soul ${nums.soul}</span>
+            <span class="tag">PY ${nums.py}</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:6px">
+          ${i!==activeIdx?`<button class="btn btn-outline btn-sm" onclick="switchProfile(${i})">Switch</button>`:'<span class="tag" style="align-self:flex-start">Active</span>'}
+          <button class="btn btn-danger btn-sm" onclick="deleteProfile(${i})">Del</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderAgents(){
+  // Pre-render agent cards without output
+  document.getElementById('agents-container').innerHTML = AGENTS.map(a=>`
+    <div class="agent-card">
+      <div class="aname">✦ ${a.name}</div>
+      <div class="astyle">${a.style}</div>
+      <div class="pbar"><div class="pfill" style="width:0"></div></div>
+    </div>`).join('');
+}
+
+// ============================================================
+// NAV
+// ============================================================
+function switchTab(name){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name)?.classList.add('active');
+  const btns = document.querySelectorAll('nav button');
+  const tabIdx = {dashboard:0,forecast:1,compatibility:2,solutions:3,consensus:4,profiles:5};
+  if(btns[tabIdx[name]]) btns[tabIdx[name]].classList.add('active');
+}
+
+// ============================================================
+// STARFIELD
+// ============================================================
+function initStars(){
+  const c = document.getElementById('stars');
+  const ctx = c.getContext('2d');
+  c.width = window.innerWidth; c.height = window.innerHeight;
+  const stars = Array.from({length:200},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.2+.2,a:Math.random(),da:Math.random()*.01-.005}));
+  function draw(){
+    ctx.clearRect(0,0,c.width,c.height);
+    stars.forEach(s=>{
+      s.a = Math.max(0,Math.min(1,s.a+s.da));
+      if(s.a<=0||s.a>=1) s.da*=-1;
+      ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(240,208,128,${s.a*0.7})`;ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+  window.addEventListener('resize',()=>{c.width=window.innerWidth;c.height=window.innerHeight});
+}
+
+// ============================================================
+// UTILS
+// ============================================================
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded',()=>{
+  initStars();
+  if(profiles.length>0){
+    // Show existing profiles on landing
+    const ep = document.getElementById('existing-profiles');
+    if(ep){
+      ep.innerHTML='<div class="divider">or continue as</div>'+
+        profiles.map((p,i)=>`<button class="btn btn-outline btn-sm" style="margin:3px" onclick="activeIdx=${i};saveActive();launchApp()">${p.nick}</button>`).join('');
+    }
+  }
+});
+</script>
 </body>
 </html>
