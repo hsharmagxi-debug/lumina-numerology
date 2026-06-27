@@ -397,6 +397,8 @@ function ntn(name,chart=PYT){return name.toUpperCase().replace(/[^A-Z]/g,'').spl
 function vn(name,chart=PYT){return name.toUpperCase().replace(/[^A-Z]/g,'').split('').filter(c=>VOWELS.has(c)).reduce((s,c)=>s+(chart[c]||0),0);}
 function cn(name,chart=PYT){return name.toUpperCase().replace(/[^A-Z]/g,'').split('').filter(c=>!VOWELS.has(c)).reduce((s,c)=>s+(chart[c]||0),0);}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function clip(s,n){s=String(s==null?'':s);if(s.length<=n)return s;let c=s.slice(0,n);const sp=c.lastIndexOf(' ');if(sp>n*0.55)c=c.slice(0,sp);return c.replace(/[\s,.;:—-]+$/,'')+'…';}
+function ord(n){n=parseInt(n);const v=n%100;return n+(['th','st','nd','rd'][(v-20)%10]||['th','st','nd','rd'][v]||'th');}
 
 // ── ESSENCE CYCLE ENGINE ──
 function getTransit(namePart,age){
@@ -498,8 +500,8 @@ function calcNumbers(name,dob){
   // Rational Thought = reduce(first name letters sum + birth day)
   const rationalThought=reduce(ntn(firstName)+d);
   // Bridge Numbers
-  const lpExprBridge=Math.abs((lp>9?lp:lp)-(expr>9?expr:expr));
-  const soulPersBridge=Math.abs(soul-pers);
+  const lpExprBridge=Math.abs((lp>9?rNM(lp):lp)-(expr>9?rNM(expr):expr));
+  const soulPersBridge=Math.abs((soul>9?rNM(soul):soul)-(pers>9?rNM(pers):pers));
   // Minor Numbers (from nickname — passed separately)
   // Kabbalah — Tree of Life Sephira (Hebrew reduction: sum digits until 1–10)
   // Uses Pythagorean value of full name, reduces to 1–10 (10=Malkuth, not reduced further)
@@ -636,7 +638,7 @@ function renderPlanesDash(N){
       <span style="font-family:'Cinzel',serif;color:var(--gold)">${pl.n}</span>
     </div>
     <div style="height:5px;background:var(--s3);border-radius:3px;overflow:hidden;margin-bottom:3px"><div style="width:${pct}%;height:100%;background:${pl.col};border-radius:3px;transition:width .8s ease"></div></div>
-    <div style="font-size:.65rem;color:var(--txm)">${pct}% · ${PLANE_M[pl.k]?.slice(0,65)||'—'}…</div>
+    <div style="font-size:.65rem;color:var(--txm)">${pct}% · ${clip(PLANE_M[pl.k],65)||'—'}…</div>
   </div>`}).join('')}
   <div style="margin-top:10px;font-size:.76rem;color:var(--txd)">Dominant plane: <span class="highlight">${N.domPlane}</span> — ${PLANE_M[N.domPlane]||'A uniquely balanced expression.'}</div>`;
 }
@@ -861,7 +863,7 @@ function calcCompat(){
   document.getElementById('compat-label').textContent=label;
   document.getElementById('compat-bars').innerHTML=dims.map(d=>{const col=d.v>=70?'var(--green)':d.v>=50?'var(--gold)':'var(--red)';const vd=d.v>=78?'strong':d.v>=60?'workable':'growth area';return `<div class="cbar-row"><div class="cbar-label">${d.l}</div><div class="cbar-track"><div class="cbar-fill" style="width:${d.v}%;background:${col}"></div></div><div class="cbar-val">${d.v}</div></div><div class="cbar-meaning">${d.m} · <span style="color:${col}">${vd}</span></div>`;}).join('');
   const vrel=vcompat(mvm,tvm);
-  document.getElementById('compat-text').innerHTML=`<b>${esc(p.nick)}</b> (LP ${me.lp}) + <b>${esc(name.split(' ')[0])}</b> (LP ${them.lp}) = ${total}% overall. ${total>=70?`A ${NM[me.lp]?.k} + ${NM[them.lp]?.k} synergy — genuine long-term potential.`:`Different life paths — with conscious communication, ${total>=50?'this works beautifully.':'real growth is possible.'}`}<br><br><b>Vedic:</b> Moolank ${mvm} (${VED_PLANETS[mvm]||'—'}) & ${tvm} (${VED_PLANETS[tvm]||'—'}) — ${vrel>=76?'friendly planetary energies, natural ease.':vrel>=60?'neutral planetary mix, balanced.':'challenging pairing — needs conscious effort.'} <b>Chaldean:</b> name vibrations ${me.cexpr} & ${them.cexpr} ${cs(me.cexpr,them.cexpr)>=70?'resonate well.':'differ — complementary karmic lessons.'}`;
+  document.getElementById('compat-text').innerHTML=`<b>${esc(p.nick)}</b> (LP ${me.lp}) + <b>${esc(name.split(' ')[0])}</b> (LP ${them.lp}) = ${total}% overall. ${total>=70?`${NM[me.lp]?.k} + ${NM[them.lp]?.k} — a synergy with genuine long-term potential.`:`Different life paths — with conscious communication, ${total>=50?'this works beautifully.':'real growth is possible.'}`}<br><br><b>Vedic:</b> Moolank ${mvm} (${VED_PLANETS[mvm]||'—'}) & ${tvm} (${VED_PLANETS[tvm]||'—'}) — ${vrel>=76?'friendly planetary energies, natural ease.':vrel>=60?'neutral planetary mix, balanced.':'challenging pairing — needs conscious effort.'} <b>Chaldean:</b> name vibrations ${me.cexpr} & ${them.cexpr} ${cs(me.cexpr,them.cexpr)>=70?'resonate well.':'differ — complementary karmic lessons.'}`;
   document.getElementById('compat-result').style.display='block';
 }
 function cs(a,b){const d=Math.abs(a-b);return d===0?95:[3,6,9].includes(d)?88:[1,2].includes(d)?78:[4,5].includes(d)?62:45;}
@@ -881,15 +883,15 @@ function genRem(cat,urg,N,nick){
   const lp=N.lp,py=N.py,soul=N.soul,pin=N.pins[N.cp-1]?.n||lp;
   const base=[
     {i:'🔢',t:'Power Numbers',d:`LP ${lp} makes ${lp}, ${reduce(lp+9)}, ${reduce(lp+18)} your strongest numbers. Use in all critical decisions.`},
-    {i:'💎',t:'Crystal Prescription',d:`${gC(lp)} for LP ${lp}. ${gC(soul)} for Soul ${soul}. Charge under moonlight on the ${lp}th.`},
+    {i:'💎',t:'Crystal Prescription',d:`${gC(lp)} for LP ${lp}. ${gC(soul)} for Soul ${soul}. Charge under moonlight on the ${ord(lp)}.`},
     {i:'🎨',t:'Color Therapy',d:`${gCol(lp)} activates your LP. ${gCol(pin)} enhances Pinnacle ${pin} energy.`},
-    {i:'◎',t:'Pinnacle Context',d:`${N.pins[N.cp-1]?.l} Pinnacle (${pin}): ${PIN_M[pin]?.slice(0,80)||''}`},
+    {i:'◎',t:'Pinnacle Context',d:`${N.pins[N.cp-1]?.l} Pinnacle (${pin}): ${clip(PIN_M[pin],80)||''}`},
     {i:'⏰',t:'Power Timing',d:`${urg==='immediate'?'Act within 3 days on Personal Day '+lp+'.':urg==='short'?'Begin next Personal Month matching LP '+lp+'.':'Align with PY '+(py>5?py-1:py+1)+' transition.'}`},
   ];
   const cat2={
     career:[{i:'🌟',t:'Career Path',d:`LP ${lp} excels at: ${gCS(lp)}. PY ${py}: ${py<=4?'build, not expand yet.':'be visible and expand boldly.'}`}],
     love:[{i:'💝',t:'Relationship',d:`Soul ${soul} needs: ${gSN(soul)}. Best partner LPs: ${gCL(lp)}. ${N.lsm.includes(2)?'Missing 2: '+LS_FIX[2]:''}`}],
-    finance:[{i:'💰',t:'Wealth',d:`Expr ${N.expr} governs earning. ${N.expr===8?'Built for mastery.':'Align work with gifts to unlock flow.'} Best financial dates: ${lp}th, ${reduce(lp+9)}th.`}],
+    finance:[{i:'💰',t:'Wealth',d:`Expr ${N.expr} governs earning. ${N.expr===8?'Built for mastery.':'Align work with gifts to unlock flow.'} Best financial dates: ${ord(lp)}, ${ord(reduce(lp+9))}.`}],
     health:[{i:'🧘',t:'Healing',d:`LP ${lp} governs ${gHF(lp)}. Element: ${gEl(lp)}. Practice ${gEP(lp)} for 21 days.`}],
     family:[{i:'🏠',t:'Home Harmony',d:`Ideal home numbers for LP ${lp}: ${gIH(lp)}. ${N.lsm.includes(6)?'Missing 6: '+LS_FIX[6]:''}`}],
     spiritual:[{i:'🔮',t:'Spiritual Path',d:`LP ${lp} practice: ${gSP(lp)}. PD ${N.pd} today: ${EN[N.pd]||''}.`}],
@@ -1014,7 +1016,7 @@ const AGENTS=[
       const nameOk=bridge<=2;
       const vr=N.vedic?.naamRelation||'neutral';
       const vrLabel=vr==='friendly'?'harmonious':vr==='enemy'?'conflicting':'neutral';
-      return `Name analysis for ${p.nick}: LP ${N.lp} + Expression ${N.expr} = Bridge ${bridge}. ${nameOk?'Bridge of '+bridge+' — your name is well-aligned with your Life Path.':'Bridge of '+bridge+': '+BRIDGE_M[bridge]+' A name adjustment toward LP '+N.lp+' could reduce life friction significantly.'} Soul–Personality Bridge ${spBridge}: ${BRIDGE_M[spBridge]||'inner and outer selves aligned'} — ${spBridge===0?'your private desires and public persona are in complete harmony.':'closing this inner-outer gap will unlock more authentic self-expression.'} Cornerstone "${N.cornerstone}": ${(LETTER_M[N.cornerstone]||'—').slice(0,70)} — HOW you begin every challenge. Capstone "${N.capstone}": ${(LETTER_M[N.capstone]||'—').slice(0,60)} — HOW you complete. Vedic Naam Ank ${N.vedic?.naamank||'—'} is ${vrLabel} with Moolank ${N.vedic?.moolank||'—'} — ${vr==='enemy'?'a spelling adjustment could shift this to a friendly vibration.':vr==='friendly'?'name already resonates with your birth energy.':'functional but not amplifying your birth potential.'}`;
+      return `Name analysis for ${p.nick}: LP ${N.lp} + Expression ${N.expr} = Bridge ${bridge}. ${nameOk?'Bridge of '+bridge+' — your name is well-aligned with your Life Path.':'Bridge of '+bridge+': '+BRIDGE_M[bridge]+' A name adjustment toward LP '+N.lp+' could reduce life friction significantly.'} Soul–Personality Bridge ${spBridge}: ${BRIDGE_M[spBridge]||'inner and outer selves aligned'} — ${spBridge===0?'your private desires and public persona are in complete harmony.':'closing this inner-outer gap will unlock more authentic self-expression.'} Cornerstone "${N.cornerstone}": ${clip(LETTER_M[N.cornerstone]||'—',70)} — HOW you begin every challenge. Capstone "${N.capstone}": ${clip(LETTER_M[N.capstone]||'—',60)} — HOW you complete. Vedic Naam Ank ${N.vedic?.naamank||'—'} is ${vrLabel} with Moolank ${N.vedic?.moolank||'—'} — ${vr==='enemy'?'a spelling adjustment could shift this to a friendly vibration.':vr==='friendly'?'name already resonates with your birth energy.':'functional but not amplifying your birth potential.'}`;
     }
   },
   // ── AGENT 3: VEDIC + CYCLES SPECIALIST ──
@@ -1027,7 +1029,7 @@ const AGENTS=[
       const curPin=N.pins[N.cp-1];
       const mainChal=N.chals[2];
       const essMatch=N.essenceData.essNum===N.py;
-      return `Vedic + Transit matrix for ${p.nick}: Moolank ${v?.moolank||N.psychic} (${VED_PLANETS[v?.moolank||N.psychic]||'—'}) is your planetary birth signature. Bhagyank ${v?.bhagyank||N.lp} (${VED_PLANETS[v?.bhagyank||N.lp]||'—'}) governs your destiny arc. Rashi: ${RASHI_LORDS[v?.moolank||N.psychic]||'—'}. ${v?.naamRelation==='enemy'?'⚠ Naam Ank '+v.naamank+' ('+VED_PLANETS[v.naamank]+') is ENEMY to your Moolank — chronic name-soul friction. Spelling correction strongly advised.':v?.naamRelation==='friendly'?'✓ Naam Ank '+v?.naamank+' is friendly to your Moolank — name and birth energy harmonise.':'Name is neutral to birth energy — functional but not amplifying.'} Current cycles: Pinnacle ${curPin?.n||'—'} (${curPin?.ph||'—'}) atop Main Challenge ${mainChal?.n||'—'}. ${essMatch?'Essence '+N.essenceData.essNum+' = PY '+N.py+': DUALITY — maximum intensity this year. Pivotal period.':'Essence '+N.essenceData.essNum+' (inner) beneath PY '+N.py+' (outer) — inner experience and external events on different frequencies.'} Maturity ${N.mat} (${NM[N.mat]?.k||'—'}) activates from age 45 onward.`;
+      return `Vedic + Transit matrix for ${p.nick}: Moolank ${v?.moolank||N.psychic} (${VED_PLANETS[v?.moolank||N.psychic]||'—'}) is your planetary birth signature. Bhagyank ${v?.bhagyank||N.lp} (${VED_PLANETS[v?.bhagyank||N.lp]||'—'}) governs your destiny arc. Rashi: ${RASHI_LORDS[v?.moolank||N.psychic]||'—'}. ${v?.naamRelation==='enemy'?'⚠ Naam Ank '+v.naamank+' ('+VED_PLANETS[v.naamank]+') is ENEMY to your Moolank — chronic name-soul friction. Spelling correction strongly advised.':v?.naamRelation==='friendly'?'✓ Naam Ank '+v?.naamank+' is friendly to your Moolank — name and birth energy harmonise.':'Name is neutral to birth energy — functional but not amplifying.'} Current cycles: Pinnacle ${curPin?.n??'—'} (${curPin?.ph||'—'}) atop Main Challenge ${mainChal?.n??'—'} (${CH_M[mainChal?.n]?clip(CH_M[mainChal?.n],46):'self-directed growth'}). ${essMatch?'Essence '+N.essenceData.essNum+' = PY '+N.py+': DUALITY — maximum intensity this year. Pivotal period.':'Essence '+N.essenceData.essNum+' (inner) beneath PY '+N.py+' (outer) — inner experience and external events on different frequencies.'} Maturity ${N.mat} (${NM[N.mat]?.k||'—'}) activates from age 45 onward.`;
     }
   },
   // ── AGENT 4: KABBALAH + ESOTERIC SPECIALIST ──
@@ -1038,7 +1040,7 @@ const AGENTS=[
     fn:(N,p)=>{
       const kp=KAB_PATH[N.kabbalah];
       const higherPath=N.kabbalah>=6;
-      return `Esoteric reading for ${p.nick}: Kabbalah Sephira ${N.kabbalah} — ${kp?.n||'Kether'} (${kp?.t||'The Crown'}). ${kp?.d||'A position on the Hebrew Tree of Life.'} ${higherPath?'Sephira '+N.kabbalah+' sits on the higher arc of the Tree — refined spiritual capacity, here to embody higher-order qualities in everyday life.':'A foundational Sephira — working with elemental, essential life-force energies. Raw, powerful, direct.'} First-9 Essence Diamond: Physical arc ${N.dsPhys}, Spiritual arc ${N.dsSoul}, Combined ${N.diamond} — ${(DIAMOND_M[N.diamond]||'physical and spiritual planes in unique alignment').slice(0,90)} Planes of Expression: dominant ${N.domPlane} (${(PLANE_M[N.domPlane]||'—').slice(0,65)}). First Vowel "${N.firstVowel}": ${VOWEL_M[N.firstVowel]||'your core soul sound'}. Hidden Passion ${N.hp}: ${NM[N.hp]?.d||'deepest recurring strength through your name letters'}.`;
+      return `Esoteric reading for ${p.nick}: Kabbalah Sephira ${N.kabbalah} — ${kp?.n||'Kether'} (${kp?.t||'The Crown'}). ${kp?.d||'A position on the Hebrew Tree of Life.'} ${higherPath?'Sephira '+N.kabbalah+' sits on the higher arc of the Tree — refined spiritual capacity, here to embody higher-order qualities in everyday life.':'A foundational Sephira — working with elemental, essential life-force energies. Raw, powerful, direct.'} First-9 Essence Diamond: Physical arc ${N.dsPhys}, Spiritual arc ${N.dsSoul}, Combined ${N.diamond} — ${clip(DIAMOND_M[N.diamond]||'physical and spiritual planes in unique alignment',90)} Planes of Expression: dominant ${N.domPlane} (${clip(PLANE_M[N.domPlane]||'—',65)}). First Vowel "${N.firstVowel}": ${(VOWEL_M[N.firstVowel]||'your core soul sound').replace(/\.\s*$/,'')}. Hidden Passion ${N.hp}: ${(NM[N.hp]?.d||'your deepest recurring strength').replace(/\.\s*$/,'')}.`;
     }
   },
   // ── AGENT 5: HOLISTIC CROSS-SYSTEM SYNTHESIS ──
@@ -1071,7 +1073,7 @@ async function runConsensus(){
 function showConsensus(N,p){
   const score=Math.min(99,95+(N.lp===11||N.lp===22||N.lp===33?2:0)+(N.lsm.length===0?2:0)+(N.kd.length===0?1:0));
   document.getElementById('cons-score').textContent=score+'%';
-  document.getElementById('cons-text').innerHTML=`All five world masters concur on <b>${esc(p.nick)}</b>:<br><br>Life Path <b>${N.lp}</b> (${NM[N.lp]?.k}) is your permanent soul contract. Expression ${N.expr}/${N.cexpr} shows ${Math.abs(N.expr-N.cexpr)<=1?'rare cross-system alignment — powerful and complete.':'a gap between earthly and karmic identity. Bridge this through name alignment.'}<br><br><b>Bridge Numbers:</b> LP–Expression Bridge ${N.lpExprBridge} (${BRIDGE_M[N.lpExprBridge]?.slice(0,60)||''}). Soul–Personality Bridge ${N.soulPersBridge}.<br><br>Lo Shu: ${N.lsm.length===0?'✦ Complete grid — all 9 energies. Extraordinarily rare.':'Missing '+N.lsm.join(', ')+' — your lifetime growth areas.'}${N.kd.length>0?'<br><br><b>Karmic Debt '+N.kd[0]+':</b> '+KD_INFO[N.kd[0]]?.desc:''}<br><br><b>Essence Cycle ${N.essenceData.essNum}:</b> ${N.essenceData.essNum===N.py?'Duality — both Essence and PY match. Maximum intensity this year.':'Internal Essence '+N.essenceData.essNum+' overlaying external PY '+N.py+'.'} Dominant Plane: <b>${N.domPlane}</b>. Essence Diamond: <b>${N.diamond}</b> — ${DIAMOND_M[N.diamond]?.slice(0,80)||'unique physical-spiritual alignment'}. Kabbalah Sephira: <b>${KAB_PATH[N.kabbalah]?.n||'Kether'} ${N.kabbalah}</b> (${KAB_PATH[N.kabbalah]?.t||''}) — ${KAB_PATH[N.kabbalah]?.d?.slice(0,90)||'your position on the Hebrew Tree of Life'}.`;
+  document.getElementById('cons-text').innerHTML=`All five world masters concur on <b>${esc(p.nick)}</b>:<br><br>Life Path <b>${N.lp}</b> (${NM[N.lp]?.k}) is your permanent soul contract. Expression ${N.expr}/${N.cexpr} shows ${Math.abs(N.expr-N.cexpr)<=1?'rare cross-system alignment — powerful and complete.':'a gap between earthly and karmic identity. Bridge this through name alignment.'}<br><br><b>Bridge Numbers:</b> LP–Expression Bridge ${N.lpExprBridge} (${clip(BRIDGE_M[N.lpExprBridge],60)||'in natural alignment'}). Soul–Personality Bridge ${N.soulPersBridge}.<br><br>Lo Shu: ${N.lsm.length===0?'✦ Complete grid — all 9 energies. Extraordinarily rare.':'Missing '+N.lsm.join(', ')+' — your lifetime growth areas.'}${N.kd.length>0?'<br><br><b>Karmic Debt '+N.kd[0]+':</b> '+KD_INFO[N.kd[0]]?.desc:''}<br><br><b>Essence Cycle ${N.essenceData.essNum}:</b> ${N.essenceData.essNum===N.py?'Duality — both Essence and PY match. Maximum intensity this year.':'Internal Essence '+N.essenceData.essNum+' overlaying external PY '+N.py+'.'} Dominant Plane: <b>${N.domPlane}</b>. Essence Diamond: <b>${N.diamond}</b> — ${clip(DIAMOND_M[N.diamond],80)||'unique physical-spiritual alignment'}. Kabbalah Sephira: <b>${KAB_PATH[N.kabbalah]?.n||'Kether'} ${N.kabbalah}</b> (${KAB_PATH[N.kabbalah]?.t||''}) — ${clip(KAB_PATH[N.kabbalah]?.d,90)||'your position on the Hebrew Tree of Life'}.`;
   document.getElementById('cons-recs').innerHTML=[
     {i:'🔢',t:'Life Key',d:`LP ${N.lp} is your master frequency. Every major decision runs through this.`},
     {i:'🌉',t:'Bridge Action',d:`LP–Expr Bridge ${N.lpExprBridge}: ${BRIDGE_M[N.lpExprBridge]||'Align your talents with your purpose.'}  Soul–Pers Bridge ${N.soulPersBridge}: ${BRIDGE_M[N.soulPersBridge]||'Align your inner desire with your outer persona.'}`},
