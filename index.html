@@ -365,6 +365,7 @@ function sD(s){return String(Math.abs(parseInt(s)||0)).replace(/\D/g,'').split('
 function ntn(name,chart=PYT){return name.toUpperCase().replace(/[^A-Z]/g,'').split('').reduce((s,c)=>s+(chart[c]||0),0);}
 function vn(name,chart=PYT){return name.toUpperCase().replace(/[^A-Z]/g,'').split('').filter(c=>VOWELS.has(c)).reduce((s,c)=>s+(chart[c]||0),0);}
 function cn(name,chart=PYT){return name.toUpperCase().replace(/[^A-Z]/g,'').split('').filter(c=>!VOWELS.has(c)).reduce((s,c)=>s+(chart[c]||0),0);}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 
 // ── ESSENCE CYCLE ENGINE ──
 function getTransit(namePart,age){
@@ -497,10 +498,13 @@ function calcNumbers(name,dob){
   return{lp,lpRaw,expr,soul,pers,bday,mat,att,cexpr,csoul,cpers,py,pm,pd,psychic,hp,balance,kl,kd,pins,chals,pers2,cp,ca,a1,a2,a3,lsc,lsm,sub,eR,sR,pR,cornerstone,capstone,firstVowel,rationalThought,lpExprBridge,soulPersBridge,kabbalah,planes,domPlane,dsPhys,dsSoul,diamond,essenceData,firstName,middleName,lastName,vedic};
 }
 
+const SCHEMA_VERSION=3;
 let profiles=JSON.parse(localStorage.getItem('lumina_v2')||'[]');
 let ai=parseInt(localStorage.getItem('lumina_v2_ai')||'0');
 function sp(){localStorage.setItem('lumina_v2',JSON.stringify(profiles));}
 function sa(){localStorage.setItem('lumina_v2_ai',String(ai));}
+// Schema migration: sanitize legacy profiles (ensure name/dob/nick) and stamp version
+(function migrate(){try{const v=parseInt(localStorage.getItem('lumina_schema')||'0');if(v<SCHEMA_VERSION){profiles=(Array.isArray(profiles)?profiles:[]).filter(p=>p&&p.name&&p.dob).map(p=>({name:String(p.name),dob:String(p.dob),nick:(p.nick||String(p.name).split(' ')[0])}));if(!(ai>=0&&ai<profiles.length))ai=0;sp();sa();localStorage.setItem('lumina_schema',String(SCHEMA_VERSION));}}catch(e){}})();
 
 function createProfile(){
   const name=document.getElementById('inp-name').value.trim();
@@ -806,7 +810,7 @@ function calcCompat(){
   document.getElementById('cscore').textContent=total;
   document.getElementById('compat-label').textContent=label;
   document.getElementById('compat-bars').innerHTML=dims.map(d=>`<div class="cbar-row"><div class="cbar-label">${d.l}</div><div class="cbar-track"><div class="cbar-fill" style="width:${d.v}%;background:${d.v>=70?'var(--green)':d.v>=50?'var(--gold)':'var(--red)'}"></div></div><div class="cbar-val">${d.v}</div></div>`).join('');
-  document.getElementById('compat-text').innerHTML=`<b>${p.nick}</b> (LP ${me.lp}) + <b>${name.split(' ')[0]}</b> (LP ${them.lp}) = ${total}% compatibility. ${total>=70?`A ${NM[me.lp]?.k} + ${NM[them.lp]?.k} synergy — genuine long-term potential.`:`Different life paths — with conscious communication, ${total>=50?'this works beautifully.':'real growth is possible.'}`}`;
+  document.getElementById('compat-text').innerHTML=`<b>${esc(p.nick)}</b> (LP ${me.lp}) + <b>${esc(name.split(' ')[0])}</b> (LP ${them.lp}) = ${total}% compatibility. ${total>=70?`A ${NM[me.lp]?.k} + ${NM[them.lp]?.k} synergy — genuine long-term potential.`:`Different life paths — with conscious communication, ${total>=50?'this works beautifully.':'real growth is possible.'}`}`;
   document.getElementById('compat-result').style.display='block';
 }
 function cs(a,b){const d=Math.abs(a-b);return d===0?95:[3,6,9].includes(d)?88:[1,2].includes(d)?78:[4,5].includes(d)?62:45;}
@@ -903,8 +907,8 @@ function nameCorrection(){
     if(num===N.lp||num===N.expr||num===N.soul)sugs.push({name:test,num,r:`Aligns with ${num===N.lp?'LP':num===N.expr?'Expr':'Soul'} ${num}`});
   });
   const el=document.getElementById('correction-result');
-  if(sugs.length===0){el.innerHTML=`<div class="tool-result"><div style="text-align:center;color:var(--gold);font-size:.78rem">"${name}" (${curr}) — ${NM[curr]?.k||curr}. Add suffix letter to shift vibration toward LP ${N.lp}.</div></div>`;}
-  else{el.innerHTML=`<div class="tool-result">${sugs.slice(0,5).map(s=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:.76rem"><span style="color:var(--gl)">${s.name}</span><span style="font-family:'Cinzel',serif;color:var(--gold)">${s.num}</span><span style="font-size:.65rem;color:var(--txm)">${s.r}</span></div>`).join('')}</div>`;}
+  if(sugs.length===0){el.innerHTML=`<div class="tool-result"><div style="text-align:center;color:var(--gold);font-size:.78rem">"${esc(name)}" (${curr}) — ${NM[curr]?.k||curr}. Add suffix letter to shift vibration toward LP ${N.lp}.</div></div>`;}
+  else{el.innerHTML=`<div class="tool-result">${sugs.slice(0,5).map(s=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:.76rem"><span style="color:var(--gl)">${esc(s.name)}</span><span style="font-family:'Cinzel',serif;color:var(--gold)">${s.num}</span><span style="font-size:.65rem;color:var(--txm)">${s.r}</span></div>`).join('')}</div>`;}
 }
 
 const AGENTS=[
@@ -985,4 +989,54 @@ async function runConsensus(){
 }
 
 function showConsensus(N,p){
-  const score=Math.min(99,95+(N.lp===11||N.lp===22||N.lp===33?2:0)+(N.lsm.length===0?2:0)+(N.kd.length===0?1:0)
+  const score=Math.min(99,95+(N.lp===11||N.lp===22||N.lp===33?2:0)+(N.lsm.length===0?2:0)+(N.kd.length===0?1:0));
+  document.getElementById('cons-score').textContent=score+'%';
+  document.getElementById('cons-text').innerHTML=`All five world masters concur on <b>${esc(p.nick)}</b>:<br><br>Life Path <b>${N.lp}</b> (${NM[N.lp]?.k}) is your permanent soul contract. Expression ${N.expr}/${N.cexpr} shows ${Math.abs(N.expr-N.cexpr)<=1?'rare cross-system alignment — powerful and complete.':'a gap between earthly and karmic identity. Bridge this through name alignment.'}<br><br><b>Bridge Numbers:</b> LP–Expression Bridge ${N.lpExprBridge} (${BRIDGE_M[N.lpExprBridge]?.slice(0,60)||''}). Soul–Personality Bridge ${N.soulPersBridge}.<br><br>Lo Shu: ${N.lsm.length===0?'✦ Complete grid — all 9 energies. Extraordinarily rare.':'Missing '+N.lsm.join(', ')+' — your lifetime growth areas.'}${N.kd.length>0?'<br><br><b>Karmic Debt '+N.kd[0]+':</b> '+KD_INFO[N.kd[0]]?.desc:''}<br><br><b>Essence Cycle ${N.essenceData.essNum}:</b> ${N.essenceData.essNum===N.py?'Duality — both Essence and PY match. Maximum intensity this year.':'Internal Essence '+N.essenceData.essNum+' overlaying external PY '+N.py+'.'} Dominant Plane: <b>${N.domPlane}</b>. Essence Diamond: <b>${N.diamond}</b> — ${DIAMOND_M[N.diamond]?.slice(0,80)||'unique physical-spiritual alignment'}. Kabbalah Sephira: <b>${KAB_PATH[N.kabbalah]?.n||'Kether'} ${N.kabbalah}</b> (${KAB_PATH[N.kabbalah]?.t||''}) — ${KAB_PATH[N.kabbalah]?.d?.slice(0,90)||'your position on the Hebrew Tree of Life'}.`;
+  document.getElementById('cons-recs').innerHTML=[
+    {i:'🔢',t:'Life Key',d:`LP ${N.lp} is your master frequency. Every major decision runs through this.`},
+    {i:'🌉',t:'Bridge Action',d:`LP–Expr Bridge ${N.lpExprBridge}: ${BRIDGE_M[N.lpExprBridge]||'Align your talents with your purpose.'}  Soul–Pers Bridge ${N.soulPersBridge}: ${BRIDGE_M[N.soulPersBridge]||'Align your inner desire with your outer persona.'}`},
+    {i:'🌀',t:'Essence Focus',d:`Current Essence ${N.essenceData.essNum} + PY ${N.py}: ${N.essenceData.essNum===N.py?'Double energy — maximum focus and intensity on these themes this year.':'Balance internal Essence energy with external Personal Year demands simultaneously.'}`},
+    {i:'⊞',t:'Lo Shu Action',d:N.lsm.length>0?`Balance missing ${N.lsm.join(', ')}: ${N.lsm.slice(0,2).map(n=>LS_FIX[n]).join(' | ')}`:'Complete grid. Strengthen your weakest plane from the analysis tab.'},
+    {i:'💎',t:'Crystal Protocol',d:`${gC(N.lp)} (LP) + ${gC(N.soul)} (Soul). Dominant ${N.domPlane} plane: ${N.domPlane==='Mental'?'Meditate to balance intellect with intuition.':N.domPlane==='Physical'?'Add spiritual practice to your routine.':N.domPlane==='Emotional'?'Develop analytical skills to balance emotion.':'Ground your spiritual gifts in physical practice.'}`},
+  ].map(r=>`<div class="remedy"><div class="remedy-title">${r.i} ${r.t}</div><div class="remedy-text">${r.d}</div></div>`).join('');
+  document.getElementById('consensus-box').style.display='block';
+}
+
+function updateChips(){const h=profiles.map((pp,i)=>`<div class="pchip${i===ai?' active':''}" onclick="switchProfile(${i})">${esc(pp.nick)}</div>`).join('');const el=document.getElementById('pchips-dash');if(el)el.innerHTML=h;}
+function renderPT(){
+  const el=document.getElementById('all-profiles');if(!el)return;
+  el.innerHTML=profiles.map((pp,i)=>{const N=calcNumbers(pp.name,pp.dob);const dob=new Date(pp.dob).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});return`<div class="card" style="margin-bottom:8px;padding:12px"><div style="display:flex;justify-content:space-between;align-items:flex-start"><div><div style="font-family:'Cinzel',serif;color:var(--gl)">${esc(pp.nick)}</div><div style="font-size:.68rem;color:var(--txm);margin-bottom:6px">${esc(pp.name)} · ${dob}</div><div style="display:flex;gap:4px;flex-wrap:wrap"><span class="badge">LP ${N.lp}</span><span class="badge">Expr ${N.expr}</span><span class="badge">PY ${N.py}</span>${N.kd.length>0?`<span class="badge karmic">KD ${N.kd[0]}</span>`:''}</div></div><div style="display:flex;gap:5px">${i!==ai?`<button class="btn btn-outline btn-sm" onclick="switchProfile(${i})">Switch</button>`:'<span class="badge">Active</span>'}<button class="btn btn-danger btn-sm" onclick="deleteProfile(${i})">Del</button></div></div></div>`;}).join('');
+}
+function renderAgents(){const c=document.getElementById('agents-container');if(!c)return;c.innerHTML=AGENTS.map(a=>`<div class="agent-card"><div class="aname">✦ ${a.name}</div><div class="astyle">${a.style}</div><div class="pbar"><div class="pfill" style="width:0"></div></div></div>`).join('');}
+
+function switchTab(name){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name)?.classList.add('active');
+  const map={dashboard:0,loshu:1,cycles:2,forecast:3,compatibility:4,solutions:5,tools:6,consensus:7,profiles:8};
+  const btns=document.querySelectorAll('nav button');
+  if(btns[map[name]])btns[map[name]].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function initStars(){
+  const c=document.getElementById('stars');const ctx=c.getContext('2d');
+  c.width=window.innerWidth;c.height=window.innerHeight;
+  const stars=Array.from({length:170},()=>({x:Math.random()*c.width,y:Math.random()*c.height,r:Math.random()*1.1+.2,a:Math.random(),da:Math.random()*.007-.0035}));
+  function draw(){ctx.clearRect(0,0,c.width,c.height);stars.forEach(s=>{s.a=Math.max(0,Math.min(1,s.a+s.da));if(s.a<=0||s.a>=1)s.da*=-1;ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fillStyle=`rgba(240,208,128,${s.a*.62})`;ctx.fill();});requestAnimationFrame(draw);}
+  draw();window.addEventListener('resize',()=>{c.width=window.innerWidth;c.height=window.innerHeight;});
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  initStars();
+  if(profiles.length>0){
+    const ep=document.getElementById('existing-profiles');
+    if(ep)ep.innerHTML='<div class="divider">or continue as</div>'+profiles.map((pp,i)=>`<button class="btn btn-outline btn-sm" style="margin:3px" onclick="ai=${i};sa();launchApp()">${esc(pp.nick)}</button>`).join('');
+  }
+});
+</script>
+</body>
+</html>
