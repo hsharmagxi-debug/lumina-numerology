@@ -673,15 +673,15 @@ function renderVedic(N){
   const v=N.vedic;
   if(!v)return;
   const relColor=v.naamRelation==='friendly'?'var(--green)':v.naamRelation==='enemy'?'var(--red)':'var(--teal)';
-  const vn=document.getElementById('vedic-numbers');
-  const vc=document.getElementById('vedic-compat');
-  if(!vn||!vc)return;
-  vn.innerHTML=[
+  const elVN=document.getElementById('vedic-numbers');
+  const elVC=document.getElementById('vedic-compat');
+  if(!elVN||!elVC)return;
+  elVN.innerHTML=[
     `<div class="norb"><div class="nval" style="color:var(--gold)">${v.moolank}</div><div class="nlbl">Moolank</div><div class="nmng">Psychic · Day</div></div>`,
     `<div class="norb"><div class="nval" style="color:var(--teal)">${v.bhagyank}</div><div class="nlbl">Bhagyank</div><div class="nmng">Destiny · DOB</div></div>`,
     `<div class="norb"><div class="nval" style="color:${relColor}">${v.naamank}</div><div class="nlbl">Naam Ank</div><div class="nmng">Name vibration</div></div>`
   ].join('');
-  vc.innerHTML=
+  elVC.innerHTML=
     `<b style="color:var(--gold)">Planetary Lord:</b> ${esc(VED_PLANETS[v.moolank]||'—')} &nbsp;|&nbsp;
      <b style="color:var(--gold)">Rashi:</b> ${esc(RASHI_LORDS[v.moolank]||'—')} &nbsp;|&nbsp;
      <b style="color:${relColor}">Name–Moolank:</b> <span style="color:${relColor}">${esc(v.naamRelation.toUpperCase())}</span>
@@ -985,5 +985,4 @@ async function runConsensus(){
 }
 
 function showConsensus(N,p){
-  const score=Math.min(99,95+(N.lp===11||N.lp===22||N.lp===33?2:0)+(N.lsm.length===0?2:0)+(N.kd.length===0?1:0));
-  documen
+  const score=Math.min(99,95+(N.lp===11||N.lp===22||N.lp===33?2:0)+(N.lsm.length===0?2:0)+(N.kd.length===0?1:0)
