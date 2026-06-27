@@ -32,6 +32,14 @@ main{padding:18px 16px;max-width:800px;margin:0 auto}
 .badge.master{background:rgba(184,110,240,.1);border-color:rgba(184,110,240,.3);color:var(--purple)}
 .badge.karmic{background:rgba(224,92,92,.1);border-color:rgba(224,92,92,.3);color:var(--red)}
 .ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
+.mstrip{display:flex;gap:8px;overflow-x:auto;padding:4px 1px 9px;scrollbar-width:thin;scrollbar-color:var(--bdr) transparent}
+.mstrip::-webkit-scrollbar{height:6px}.mstrip::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:3px}
+.mcell{flex:0 0 auto;min-width:60px;text-align:center;padding:9px 7px;border-radius:10px;background:var(--s2);border:1px solid var(--bdr);transition:all .3s}
+.mcell.cur{border-color:var(--gold);box-shadow:0 0 14px rgba(201,168,76,.35);background:rgba(201,168,76,.07)}
+.mcell .mmo{font-size:.58rem;letter-spacing:.5px;text-transform:uppercase;color:var(--txm)}
+.mcell .mnum{font-family:'Cinzel',serif;font-size:1.45rem;line-height:1.2;color:var(--gl);margin:1px 0}
+.mcell .mnum.master{color:var(--gold)}
+.mcell .men{font-size:.5rem;color:var(--txd);line-height:1.15}
 .norb{background:var(--s2);border:1px solid var(--bdr);border-radius:10px;padding:12px 8px;text-align:center;transition:all .3s;cursor:default}
 .norb:hover{border-color:var(--gold);transform:translateY(-2px)}
 .nval{font-family:'Cinzel',serif;font-size:1.9rem;font-weight:600;color:var(--gold);line-height:1;margin-bottom:2px}
@@ -101,6 +109,7 @@ select option{background:#0a1428;color:var(--txt)}
 .cbar-track{flex:1;height:5px;background:rgba(201,168,76,.08);border-radius:3px;overflow:hidden}
 .cbar-fill{height:100%;border-radius:3px}
 .cbar-val{width:26px;font-family:'Cinzel',serif;color:var(--gold);font-size:.72rem}
+.cbar-meaning{font-size:.58rem;color:var(--txm);margin:0 0 9px 115px;line-height:1.3}
 .agent-card{background:var(--s2);border:1px solid rgba(184,110,240,.18);border-radius:11px;padding:13px;margin-bottom:9px;transition:all .3s}
 .agent-card.done{border-color:rgba(184,110,240,.42);background:rgba(110,63,191,.07)}
 .aname{font-family:'Cinzel',serif;font-size:.78rem;color:var(--purple);margin-bottom:2px}
@@ -142,6 +151,21 @@ footer a{color:var(--gold);text-decoration:none}footer a:hover{text-decoration:u
 @keyframes glow{0%,100%{text-shadow:0 0 20px rgba(201,168,76,.3)}50%{text-shadow:0 0 50px rgba(201,168,76,.7)}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @media(max-width:480px){header{padding:8px 12px}.logo{font-size:1rem}main{padding:12px 10px}.card{padding:13px}.ngrid{grid-template-columns:repeat(2,1fr)}.pin-cards{grid-template-columns:1fr}.two-col{grid-template-columns:1fr}}
+.print-only{display:none}
+@media print{
+  :root{--bg:#fff;--s1:#fff;--s2:#f7f7f7;--s3:#fafafa;--gl:#8a6d1f;--gold:#8a6d1f;--txt:#1a1a1a;--txd:#333;--txm:#666;--bdr:#cfcfcf;--gd:#f4efdf;--gb:#d8c89a;--teal:#1d8f84;--purple:#7a3fb0;--green:#2e7d52;--red:#c0392b}
+  *{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body{background:#fff!important;color:#1a1a1a!important}
+  #stars,#nav,nav,header,#footer,#landing,.toast,.btn,.no-print,.pchips{display:none!important}
+  .tab-content{display:none!important}
+  #tab-dashboard{display:block!important}
+  main{padding:0!important;max-width:100%!important;margin:0!important}
+  .card{break-inside:avoid;page-break-inside:avoid;box-shadow:none!important;margin-bottom:9px!important;border:1px solid #d8d8d8!important}
+  .norb,.mcell{background:#f7f7f7!important;border:1px solid #ddd!important}
+  .mstrip{overflow:visible!important;flex-wrap:wrap}
+  .print-only{display:block!important}
+  @page{margin:12mm}
+}
 </style>
 </head>
 <body>
@@ -183,10 +207,15 @@ footer a{color:var(--gold);text-decoration:none}footer a:hover{text-decoration:u
 </div>
 
 <div class="tab-content" id="tab-dashboard">
+  <div class="print-only" id="print-header">
+    <div style="font-family:'Cinzel',serif;font-size:1.5rem;color:#8a6d1f;letter-spacing:1px">✦ LUMINA NUMEROLOGY</div>
+    <div id="print-sub" style="font-size:.82rem;color:#444;margin-top:2px"></div>
+    <hr style="border:none;border-top:1px solid #ccc;margin:9px 0 14px">
+  </div>
   <div class="card">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px">
       <div><div class="section-title" id="dash-name">—</div><div class="section-sub" id="dash-dob">—</div></div>
-      <div class="pchips" id="pchips-dash"></div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap"><div class="pchips" id="pchips-dash"></div><button class="btn btn-outline btn-sm no-print" onclick="exportPDF()" title="Save your full reading as a PDF">⤓ Export PDF</button></div>
     </div>
   </div>
   <div class="card"><div class="ct">✦ Core Numbers <span class="badge">Pythagorean</span></div><div class="ngrid" id="core-numbers"></div></div>
@@ -194,6 +223,7 @@ footer a{color:var(--gold);text-decoration:none}footer a:hover{text-decoration:u
   <div class="card"><div class="ct">⊞ Chaldean System <span class="badge">Ancient Babylon</span></div><div class="ngrid" id="chal-numbers"></div></div>
   <div class="card" id="vedic-card"><div class="ct">✦ Vedic Numerology <span class="badge new">Jyotish</span></div><div class="ngrid" id="vedic-numbers"></div><div id="vedic-compat" style="margin-top:10px;font-size:.74rem;color:var(--txd);line-height:1.7"></div></div>
   <div class="card"><div class="ct">◉ Current Cycles</div><div class="ngrid" id="cycle-numbers"></div></div>
+  <div class="card"><div class="ct">📅 12-Month Forecast <span class="badge new" id="strip-year"></span></div><div class="section-sub">Your Personal Month energy across the year · current month glows gold</div><div class="mstrip" id="month-strip"></div></div>
   <div class="card"><div class="ct">🔤 Name Signature Numbers <span class="badge new">Exclusive</span></div><div class="ngrid" id="sig-numbers"></div></div>
   <div class="card"><div class="ct">⬡ Bridge Numbers <span class="badge new">Decoz Exclusive → Now Free</span></div><div id="bridge-content"></div></div>
   <div class="card"><div class="ct">◈ Planes of Expression <span class="badge new">Rare Feature</span></div><div id="planes-dash"></div></div>
@@ -558,7 +588,7 @@ function renderDash(){
   renderPlanesDash(N);
   // First-9 Essence Diamond
   renderDiamond(N);
-  renderKarmic(N);renderVedic(N);renderLS(N);renderCycles(N,p);renderForecast(N,p);renderLC(N,p);renderPT();updateChips();renderAgents();
+  renderKarmic(N);renderVedic(N);renderLS(N);renderCycles(N,p);renderMonthStrip(N);renderForecast(N,p);renderLC(N,p);renderPT();updateChips();renderAgents();
   document.getElementById('meanings-content').innerHTML=[N.lp,N.expr,N.soul].map(n=>{const mn=NM[n];return mn?`<div style="margin-bottom:10px"><span class="highlight">${n} — ${mn.k} (${mn.t})</span><br><span style="color:var(--txd)">${mn.d}</span></div>`:''}).join('');
 }
 
@@ -756,6 +786,15 @@ function renderCycles(N,p){
   if(prd)prd.innerHTML=`Three major life phases forming your soul's complete journey. Current phase number: <span class="highlight">${N.pers2[N.cp<=1?0:N.cp<=3?1:2]?.n||'—'}</span>.`;
 }
 
+function renderMonthStrip(N){
+  const el=document.getElementById('month-strip');if(!el)return;
+  const now=new Date(),curM=now.getMonth()+1,yr=now.getFullYear();
+  const MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const yEl=document.getElementById('strip-year');if(yEl)yEl.textContent=yr;
+  let h='';
+  for(let m=1;m<=12;m++){const pmn=reduce(N.py+m);const isM=pmn===11||pmn===22||pmn===33;const cur=m===curM;h+=`<div class="mcell${cur?' cur':''}"><div class="mmo">${MO[m-1]}${cur?' ◎':''}</div><div class="mnum${isM?' master':''}">${pmn}</div><div class="men">${(EN[pmn]||'').split(' · ')[0]}</div></div>`;}
+  el.innerHTML=h;
+}
 function renderForecast(N,p){
   const fb=document.getElementById('fbar');
   if(fb)fb.innerHTML=`<div class="fbadge"><div class="fbv">${N.py}</div><div class="fbl">Personal Year</div></div><div class="fbadge"><div class="fbv">${N.pm}</div><div class="fbl">This Month</div></div><div class="fbadge"><div class="fbv" style="color:var(--gold)">${N.pd}</div><div class="fbl">Today</div></div>`;
@@ -804,16 +843,28 @@ function calcCompat(){
   const dob=document.getElementById('compat-dob').value;
   if(!name||!dob){showToast('Enter name and date of birth');return;}
   const p=profiles[ai];const me=calcNumbers(p.name,p.dob);const them=calcNumbers(name,dob);
-  const dims=[{l:'Life Path',v:cs(me.lp,them.lp)},{l:'Soul Urge',v:cs(me.soul,them.soul)},{l:'Expression',v:cs(me.expr,them.expr)},{l:'Personality',v:cs(me.pers,them.pers)},{l:'Destiny',v:cs(me.mat,them.mat)},{l:'Psychic',v:cs(me.psychic,them.psychic)}];
+  const mvm=(me.vedic&&me.vedic.moolank),tvm=(them.vedic&&them.vedic.moolank);
+  const dims=[
+    {l:'Life Path',v:cs(me.lp,them.lp),m:'core life direction & long-term path'},
+    {l:'Soul Urge',v:cs(me.soul,them.soul),m:'inner desires & emotional needs'},
+    {l:'Expression',v:cs(me.expr,them.expr),m:'natural talents & how you each show up'},
+    {l:'Personality',v:cs(me.pers,them.pers),m:'first impressions & social chemistry'},
+    {l:'Destiny',v:cs(me.mat,them.mat),m:'shared long-term goals & maturity'},
+    {l:'Psychic',v:cs(me.psychic,them.psychic),m:'instinctive day-to-day rapport'},
+    {l:'Chaldean',v:cs(me.cexpr,them.cexpr),m:'karmic name-vibration resonance'},
+    {l:'Vedic Moolank',v:vcompat(mvm,tvm),m:'planetary birth-energy harmony (Jyotish)'}
+  ];
   const total=Math.round(dims.reduce((s,d)=>s+d.v,0)/dims.length);
   const label=total>=88?'✦ Twin Flame':total>=75?'◉ Soulmate Bond':total>=60?'⟳ Strong Match':total>=45?'◎ Compatible':'△ Growth Potential';
   document.getElementById('cscore').textContent=total;
   document.getElementById('compat-label').textContent=label;
-  document.getElementById('compat-bars').innerHTML=dims.map(d=>`<div class="cbar-row"><div class="cbar-label">${d.l}</div><div class="cbar-track"><div class="cbar-fill" style="width:${d.v}%;background:${d.v>=70?'var(--green)':d.v>=50?'var(--gold)':'var(--red)'}"></div></div><div class="cbar-val">${d.v}</div></div>`).join('');
-  document.getElementById('compat-text').innerHTML=`<b>${esc(p.nick)}</b> (LP ${me.lp}) + <b>${esc(name.split(' ')[0])}</b> (LP ${them.lp}) = ${total}% compatibility. ${total>=70?`A ${NM[me.lp]?.k} + ${NM[them.lp]?.k} synergy — genuine long-term potential.`:`Different life paths — with conscious communication, ${total>=50?'this works beautifully.':'real growth is possible.'}`}`;
+  document.getElementById('compat-bars').innerHTML=dims.map(d=>{const col=d.v>=70?'var(--green)':d.v>=50?'var(--gold)':'var(--red)';const vd=d.v>=78?'strong':d.v>=60?'workable':'growth area';return `<div class="cbar-row"><div class="cbar-label">${d.l}</div><div class="cbar-track"><div class="cbar-fill" style="width:${d.v}%;background:${col}"></div></div><div class="cbar-val">${d.v}</div></div><div class="cbar-meaning">${d.m} · <span style="color:${col}">${vd}</span></div>`;}).join('');
+  const vrel=vcompat(mvm,tvm);
+  document.getElementById('compat-text').innerHTML=`<b>${esc(p.nick)}</b> (LP ${me.lp}) + <b>${esc(name.split(' ')[0])}</b> (LP ${them.lp}) = ${total}% overall. ${total>=70?`A ${NM[me.lp]?.k} + ${NM[them.lp]?.k} synergy — genuine long-term potential.`:`Different life paths — with conscious communication, ${total>=50?'this works beautifully.':'real growth is possible.'}`}<br><br><b>Vedic:</b> Moolank ${mvm} (${VED_PLANETS[mvm]||'—'}) & ${tvm} (${VED_PLANETS[tvm]||'—'}) — ${vrel>=76?'friendly planetary energies, natural ease.':vrel>=60?'neutral planetary mix, balanced.':'challenging pairing — needs conscious effort.'} <b>Chaldean:</b> name vibrations ${me.cexpr} & ${them.cexpr} ${cs(me.cexpr,them.cexpr)>=70?'resonate well.':'differ — complementary karmic lessons.'}`;
   document.getElementById('compat-result').style.display='block';
 }
 function cs(a,b){const d=Math.abs(a-b);return d===0?95:[3,6,9].includes(d)?88:[1,2].includes(d)?78:[4,5].includes(d)?62:45;}
+function vcompat(a,b){if(!a||!b)return 65;const fa=(VED_FRIENDLY[a]||[]).includes(b),fb=(VED_FRIENDLY[b]||[]).includes(a),ea=(VED_ENEMY[a]||[]).includes(b),eb=(VED_ENEMY[b]||[]).includes(a);if(fa&&fb)return 92;if(fa||fb)return 76;if(ea&&eb)return 34;if(ea||eb)return 50;return 66;}
 
 function getSolutions(){
   const prob=document.getElementById('prob-input').value.trim();
@@ -898,17 +949,45 @@ function renderLC(N,p){
   el.innerHTML=h;
 }
 
+function nrate(s){return s>=52?{t:'✦ Excellent',c:'var(--gold)'}:s>=34?{t:'◉ Strong',c:'var(--teal)'}:s>=18?{t:'◎ Good',c:'var(--green)'}:s>0?{t:'△ Slight',c:'var(--txm)'}:{t:'—',c:'var(--txm)'};}
+function genNameVariants(name){
+  const base=name.trim();const set=new Set();
+  const add=s=>{s=s.replace(/\s+/g,' ').trim();if(s&&s.toUpperCase()!==base.toUpperCase()&&/[a-z]/i.test(s))set.add(s);};
+  const endings=['a','h','i','aa','ah','ia','ya','ka','na','sh','ee','ie'];
+  const parts=base.split(' ');const li=parts.length-1;const last=parts[li]||base;
+  const setLast=w=>{const c=parts.slice();c[li]=w;add(c.join(' '));};
+  endings.forEach(e=>{add(base+e);setLast(last+e);});
+  for(let i=0;i<last.length;i++){const ch=last[i];if(/[bcdfghjklmnpqrstvwxyz]/i.test(ch))setLast(last.slice(0,i+1)+ch+last.slice(i+1));}
+  [['a','aa'],['e','ee'],['o','oo'],['i','ee'],['u','oo']].forEach(([a,b])=>{const idx=last.toLowerCase().indexOf(a);if(idx>=0)setLast(last.slice(0,idx)+b+last.slice(idx+1));});
+  if(/[aeiou]$/i.test(last))setLast(last.slice(0,-1));
+  'aehilnrsy'.split('').forEach(l=>add(base+l));
+  return [...set].slice(0,60);
+}
 function nameCorrection(){
   const name=document.getElementById('tool-correction').value.trim();if(!name){showToast('Enter a name');return;}
   const p=profiles[ai];const N=calcNumbers(p.name,p.dob);
-  const curr=reduce(ntn(name));const sugs=[];
-  ['A','E','I','S','H','N','L','R','O'].forEach(lt=>{
-    const test=name+lt;const num=reduce(ntn(test));
-    if(num===N.lp||num===N.expr||num===N.soul)sugs.push({name:test,num,r:`Aligns with ${num===N.lp?'LP':num===N.expr?'Expr':'Soul'} ${num}`});
-  });
+  const moolank=(N.vedic&&N.vedic.moolank)||rNM(parseInt((p.dob.split('-')[2])||1));
+  const friendly=VED_FRIENDLY[moolank]||[],enemy=VED_ENEMY[moolank]||[];
+  const score=nm=>{
+    const expr=reduce(ntn(nm)),soul=reduce(vn(nm)),chal=reduce(ntn(nm,CHL)),naam=rNM(ntn(nm));
+    const rel=friendly.includes(naam)?'friendly':enemy.includes(naam)?'enemy':'neutral';
+    let s=0;
+    if(expr===N.lp)s+=40;else if(expr===N.soul)s+=24;else if(expr===N.expr)s+=8;
+    if(soul===N.soul)s+=14;else if(soul===N.lp)s+=10;
+    if(chal===N.lp)s+=12;
+    s+=rel==='friendly'?22:rel==='enemy'?-22:0;
+    return{nm,expr,soul,chal,naam,rel,s};
+  };
+  const baseline=score(name);
+  const rows=genNameVariants(name).map(score).sort((a,b)=>b.s-a.s).filter(v=>v.s>baseline.s).slice(0,8);
+  const relC=r=>r==='friendly'?'var(--green)':r==='enemy'?'var(--red)':'var(--txm)';
+  const relIco=r=>r==='friendly'?'✓':r==='enemy'?'⚠':'·';
+  const cols='display:grid;grid-template-columns:1.5fr .5fr .5fr .85fr .85fr;gap:4px;align-items:center';
+  const rowHtml=(v,cur)=>{const rt=nrate(v.s);return `<div style="${cols};padding:7px 0;border-bottom:1px solid var(--bdr);font-size:.72rem"><span style="color:${cur?'var(--txm)':'var(--gl)'};font-weight:${cur?'400':'600'}">${cur?'◦ ':''}${esc(v.nm)}${cur?' · now':''}</span><span title="Pythagorean Expression" style="font-family:'Cinzel',serif;color:var(--gold);text-align:center">${v.expr}</span><span title="Chaldean" style="text-align:center;color:var(--teal)">${v.chal}</span><span title="Vedic Naam Ank vs Moolank" style="text-align:center;color:${relC(v.rel)}">${v.naam}${relIco(v.rel)}</span><span style="text-align:right;color:${rt.c};font-size:.64rem">${cur?'baseline':rt.t}</span></div>`;};
+  const head=`<div style="${cols};font-size:.55rem;letter-spacing:.5px;text-transform:uppercase;color:var(--txm);padding-bottom:4px;border-bottom:1px solid var(--bdr)"><span>Spelling</span><span style="text-align:center">Expr</span><span style="text-align:center">Chald</span><span style="text-align:center">Vedic</span><span style="text-align:right">Rating</span></div>`;
   const el=document.getElementById('correction-result');
-  if(sugs.length===0){el.innerHTML=`<div class="tool-result"><div style="text-align:center;color:var(--gold);font-size:.78rem">"${esc(name)}" (${curr}) — ${NM[curr]?.k||curr}. Add suffix letter to shift vibration toward LP ${N.lp}.</div></div>`;}
-  else{el.innerHTML=`<div class="tool-result">${sugs.slice(0,5).map(s=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bdr);font-size:.76rem"><span style="color:var(--gl)">${esc(s.name)}</span><span style="font-family:'Cinzel',serif;color:var(--gold)">${s.num}</span><span style="font-size:.65rem;color:var(--txm)">${s.r}</span></div>`).join('')}</div>`;}
+  if(rows.length===0){el.innerHTML=`<div class="tool-result"><div style="font-size:.74rem;color:var(--gold);text-align:center;line-height:1.6">"${esc(name)}" already scores well (Expr ${baseline.expr}, Chaldean ${baseline.chal}, Vedic ${baseline.naam}${relIco(baseline.rel)}).<br>No stronger spelling found — your name is well-aligned with Life Path ${N.lp}.</div></div>`;}
+  else{el.innerHTML=`<div class="tool-result"><div style="font-size:.66rem;color:var(--txm);margin-bottom:8px">Scored vs Life Path <b style="color:var(--gold)">${N.lp}</b> · Soul ${N.soul} · Moolank ${moolank} (${VED_PLANETS[moolank]||'—'}). Spellings that raise multi-system alignment:</div>${head}${rowHtml(baseline,true)}${rows.map(v=>rowHtml(v)).join('')}<div style="font-size:.6rem;color:var(--txm);margin-top:8px;line-height:1.5">Expr = Pythagorean · Chald = Chaldean · Vedic = Naam Ank vs your Moolank (✓ friendly · ⚠ enemy). Strongest matches align Expression with Life Path ${N.lp}.</div></div>`;}
 }
 
 const AGENTS=[
@@ -1029,6 +1108,14 @@ function initStars(){
 
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
+function exportPDF(){
+  const p=profiles[ai];if(!p){showToast('Open a profile first');return;}
+  const ps=document.getElementById('print-sub');
+  if(ps){const dob=new Date(p.dob).toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});ps.textContent=`${p.name}  ·  Born ${dob}  ·  Reading generated ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}`;}
+  switchTab('dashboard');
+  showToast('Opening print dialog — choose "Save as PDF"');
+  setTimeout(()=>window.print(),350);
+}
 
 window.addEventListener('DOMContentLoaded',()=>{
   initStars();
